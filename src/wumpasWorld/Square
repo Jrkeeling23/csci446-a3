@@ -1,0 +1,24 @@
+/**
+ * A Square instance is created for each square in the game. It holds environmental variables that an agent will use to
+ * detect the state of that particular square.
+ */
+public class Square{
+
+    // variable to hold x,y cordinates of square
+    public int coord[];
+
+    /**
+     * array index : environment attriubte
+     * 0 : breeze
+     * 1 : stench
+     * 2 : glitter
+     */
+    private boolean environment_attributes[];
+
+    // Square's constructor
+    public Square(coord, environment_attributes){
+        this.coord = coord;
+        this.environment_attributes = environment_attributes;
+
+    }
+        }
