@@ -7,5 +7,5 @@ public enum EnvType {
      * 3 : wumpus
      * 4 : pit
      */
-    breeze, stench, glitter, wumpus, pit;
+	glitter, breeze, stench, wumpus, pit;
 }

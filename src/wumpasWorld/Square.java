@@ -30,6 +30,10 @@ public class Square{
 		// TODO Auto-generated constructor stub
 	}
 
+	public Square(int row, int col, boolean[] environment_attributes) {
+		// TODO Auto-generated constructor stub
+	}
+
 	public boolean has_pit() {
 		// TODO Auto-generated method stub
 		return false;
@@ -40,7 +44,7 @@ public class Square{
 		
 	}
 
-	public void remove_obj(EnvType pit) {
+	public void remove_obj(EnvType env) {
 		// TODO Auto-generated method stub
 		
 	}

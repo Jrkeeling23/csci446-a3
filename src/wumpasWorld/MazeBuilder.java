@@ -66,6 +66,26 @@ public class MazeBuilder {
 	}
 	
 	/**
+	 * adds the given environment object to all square adjacent to the given coordinates
+	 * will ignore out of bounds squares
+	 * @param row
+	 * @param col
+	 * @param env the object to place in each adj square
+	 */
+	private void remove_object_from_adjs(int row, int col, EnvType env) {
+		// Perform a remove on all adjacent squares to the given row, col
+		for (int[] coords : adj) {
+			try {
+				// place object if we can
+				maze[row + coords[0]][col + coords[1]].remove_obj(env);
+			} 
+			catch(ArrayIndexOutOfBoundsException exception) {
+			    // skip
+			}
+		}
+	}
+	
+	/**
 	 * adds the given EnvType to the maze at a random location that is not the starting square or a pit
 	 * 
 	 * @param env the object to place in a random square
@@ -134,6 +154,7 @@ public class MazeBuilder {
 		maze[rand_row][rand_col].add_obj(env);
 		// remove pit
 		maze[rand_row][rand_col].remove_obj(EnvType.pit);
+		remove_object_from_adjs(rand_row, rand_col, EnvType.breeze);
 		// return location
 		int[] coords = {rand_row, rand_col};
 		return coords;
