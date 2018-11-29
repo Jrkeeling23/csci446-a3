@@ -1,5 +1,3 @@
-package wumpasWorld;
-
 /**
  * A Square instance is created for each square in the game. It holds environmental variables that an agent will use to
  * detect the state of that particular square.
