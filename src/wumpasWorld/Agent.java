@@ -11,7 +11,7 @@ public class Agent {
 	}
 	
 	/**
-	 * Creates a list of all possible models for a square ignoring the gold,
+	 * Creates a list of all possible models for a square setting gold as false in all cases,
 	 * This is the same for all squares
 	 * @param x row location of the square
 	 * @param y col location of the square
@@ -24,9 +24,24 @@ public class Agent {
 		// get all possible models - use of the gold since it does not affect movement
 		boolean[][] env_models = bin_count(env_size - 1);
 		
-		// Requiring the gold to be in index 0, build model list
+		// build model list
 		for (int row=0; row<env_models.length; row++) {
-			model_list.add(new Square(x, y, env_models[row]));
+			// add a new model
+			model_list.add(new Square(x, y));
+			// add a new env list
+			model_list.get(row).environment_attributes = new boolean[env_size];
+			// place env values as determined
+			int index_of_gold = EnvType.glitter.ordinal();
+			for (int i=0; i<env_size; i++) {
+				if (i == index_of_gold) {
+					// false for gold
+					model_list.get(row).environment_attributes[i] = false;
+				}
+				else {
+					// non-gold, add whatever is in the count
+					model_list.get(row).environment_attributes[i] = env_models[row][i];
+				}
+			}
 		}
 		return model_list;
 	}

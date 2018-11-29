@@ -17,20 +17,10 @@ public class Square{
      * 3 : wumpus
      * 4 : pit
      */
-    private boolean environment_attributes[];
+    public boolean environment_attributes[];
 
     // Square's constructor
-    public Square(int coord[], boolean environment_attributes[]){
-        this.coord = coord;
-        this.environment_attributes = environment_attributes;
-
-    }
-
 	public Square(int row, int col) {
-		// TODO Auto-generated constructor stub
-	}
-
-	public Square(int row, int col, boolean[] environment_attributes) {
 		// TODO Auto-generated constructor stub
 	}
 
