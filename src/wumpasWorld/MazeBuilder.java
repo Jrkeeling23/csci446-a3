@@ -1,3 +1,5 @@
+package wumpasWorld;
+
 public class MazeBuilder {
 	private Square[][] maze;
 	private int[][] adj = {{-1, 0}, {0, -1}, {1, 0}, {0, 1}};

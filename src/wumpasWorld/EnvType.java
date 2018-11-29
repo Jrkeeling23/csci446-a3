@@ -1,3 +1,5 @@
+package wumpasWorld;
+
 public enum EnvType {
     /* 0 : breeze
      * 1 : stench

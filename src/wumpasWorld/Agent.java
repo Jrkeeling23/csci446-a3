@@ -1,3 +1,5 @@
+package wumpasWorld;
+
 import java.util.ArrayList;
 
 public class Agent {
