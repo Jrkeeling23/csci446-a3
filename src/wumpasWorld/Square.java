@@ -7,7 +7,7 @@ package wumpasWorld;
 public class Square{
 
     // variable to hold x,y cordinates of square
-    public int coord[];
+    public int row, col;
 
     /*
      * array index : environment attriubte
@@ -19,33 +19,33 @@ public class Square{
      */
     private boolean environment_attributes[];
 
-    // Square's constructor
-    public Square(int coord[], boolean environment_attributes[]){
-        this.coord = coord;
-        this.environment_attributes = environment_attributes;
-
-    }
-
 	public Square(int row, int col) {
 		// TODO Auto-generated constructor stub
 	}
 
 	public Square(int row, int col, boolean[] environment_attributes) {
-		// TODO Auto-generated constructor stub
+		this.row = row;
+		this.col = col;
+		this.environment_attributes = environment_attributes;
 	}
 
 	public boolean has_pit() {
-		// TODO Auto-generated method stub
+		if(environment_attributes[4] == true){
+			return true;
+		}
 		return false;
 	}
 
 	public void add_obj(EnvType env) {
-		// TODO Auto-generated method stub
-		
+		int index = env.ordinal();
+		environment_attributes[index] = true;
+
+
 	}
 
 	public void remove_obj(EnvType env) {
-		// TODO Auto-generated method stub
+		int index = env.ordinal();
+		environment_attributes[index] = false;
 		
 	}
 }
