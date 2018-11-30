@@ -1,11 +1,11 @@
 package wumpasWorld;
 
 public enum EnvType {
-    /* 0 : breeze
-     * 1 : stench
-     * 2 : glitter
-     * 3 : wumpus
+    /* 0 : glitter
+     * 1 : breeze
+     * 2 : stench
+     * 3 : wumpas
      * 4 : pit
      */
-	glitter, breeze, stench, wumpus, pit;
+	glitter, breeze, stench, wumpas, pit;
 }
