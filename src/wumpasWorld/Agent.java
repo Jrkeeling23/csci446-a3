@@ -21,25 +21,36 @@ public class Agent {
 		// list for all models for a square
 		ArrayList<Square> model_list = new ArrayList<Square>();
 		
+		// list of all env attributes to ignore
+		EnvType[] ignore = {EnvType.glitter, EnvType.breeze, EnvType.stench};
+		
 		// get all possible models minus the use of the gold since it does not affect inference
-		boolean[][] env_models = bin_count(env_size - 1);
+		boolean[][] env_models = bin_count(env_size - ignore.length);
 		
 		// build model list
 		for (int row=0; row<env_models.length; row++) {
 			// add a new model
 			model_list.add(new Square(x, y));
+			
 			// add a new env list
 			model_list.get(row).environment_attributes = new boolean[env_size];
+			// index of the binary count
+			int n = 0;
+			
 			// place env values as determined
-			int index_of_gold = EnvType.glitter.ordinal();
 			for (int i=0; i<env_size; i++) {
-				if (i == index_of_gold) {
-					// false for gold
-					model_list.get(row).environment_attributes[i] = false;
+				boolean ignored = false;
+				for (int j=0; j<ignore.length; j++) {
+					if (i == ignore[j].ordinal()) {
+						// false for ignored attributes
+						model_list.get(row).environment_attributes[i] = false;
+						ignored = true;
+					}
 				}
-				else {
-					// non-gold, add whatever is in the count
-					model_list.get(row).environment_attributes[i] = env_models[row][i];
+				if (!ignored) {
+					// non-ignored, add whatever is in the count
+					model_list.get(row).environment_attributes[i] = env_models[row][n];
+					n++;
 				}
 			}
 		}

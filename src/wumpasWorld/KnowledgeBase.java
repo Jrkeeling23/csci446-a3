@@ -21,7 +21,7 @@ public class KnowledgeBase{
 	Square current_square;
 	
 	// list of all known squares, add whenever a square's contents become certain
-	ArrayList<Square> known_squares = new ArrayList<>();
+	ArrayList<ArrayList<Square>> known_squares = new ArrayList<ArrayList<Square>>();
 	
 	public void init() {
 		player_has_gold = false;
