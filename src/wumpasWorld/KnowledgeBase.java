@@ -52,7 +52,8 @@ public class KnowledgeBase{
 		return current_square;
 	}
 	
-	public void updateKbs(Square square) {
+	
+	public void updateKbs(Square square) { // add squares one at a time to updateKbs
 		int col_coord = square.col;
 		int row_coord = square.row;
 		
@@ -67,6 +68,7 @@ public class KnowledgeBase{
 			}
 			else if(kbs.get(row_coord).get(col_coord) != square && square == current_square) {
 				//TODO: add the current square to the knowledge base
+				kbs.get(row_coord).set(col_coord, square);
 				
 			}
 		}
