@@ -22,11 +22,11 @@ public class KnowledgeBase{
 	static int p = 4;
 	
 	// adjacent squares of kbs are added to frontier
-	private ArrayList<Square> frontier = new ArrayList<Square>();
+	private ArrayList<ArrayList<Square>> frontier = new ArrayList<ArrayList<Square>>();
 			
 	Square current_square;
 	
-	// add adjacent squares of Agent's current location to kbs,(kbs = knowledge base square)
+	// add squares that are have been visited or proven by FOL to kbs,(kbs = knowledge base square)
 	ArrayList<ArrayList<Square>> kbs = new ArrayList<ArrayList<Square>>();
 	
 	public void init() {
@@ -42,12 +42,15 @@ public class KnowledgeBase{
 	
 	public void setCurrentSquare(Square currentSquare) {
 		current_square = currentSquare;
-		
+		updateKbs(currentSquare);
 		
 	}
 	
-	public void updateKbs() {
+	public void updateKbs(Square square) {
+		//TODO: call FOL method to obtain actual "model" of square
 		
+		if (!kbs.contains(square)){
+		}
 	}
 	
 	public void updateFrontier() {
