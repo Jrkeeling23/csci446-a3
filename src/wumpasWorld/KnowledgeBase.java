@@ -24,7 +24,7 @@ public class KnowledgeBase{
 	static Square current_square;
 	
 	// add squares that are have been visited or proven by FOL to kbs,(kbs = knowledge base square)
-	ArrayList<ArrayList<Square>> kbs = new ArrayList<ArrayList<Square>>(5);
+	public ArrayList<ArrayList<Square>> kbs = new ArrayList<ArrayList<Square>>();
 	
 	public void init() {
 		player_has_gold = false;
@@ -52,13 +52,33 @@ public class KnowledgeBase{
 		return current_square;
 	}
 	
+	/**
+	 * gets the square located at the coordinates in KBS if it exists
+	 * @param row
+	 * @param col
+	 * @return the square in KBS at row, col
+	 */
+	public Square get_Kbs(int row, int col) throws ArrayIndexOutOfBoundsException {
+		// check KBS is big enough
+		if (row >= kbs.size() || col >= kbs.get(row).size()) {
+			changeArrayListSize(kbs);
+		}
+		// get the element
+		Square element = kbs.get(row).get(col);
+		if (element.fake) {
+			throw new ArrayIndexOutOfBoundsException();
+		}
+		else {
+			return element;
+		}
+	}
 	
 	public void updateKbs(Square square) { // add squares one at a time to updateKbs
 		int col_coord = square.col;
 		int row_coord = square.row;
 		
 		try {
-			if (kbs.get(row_coord).get(col_coord) != square && square != current_square){
+			if (get_Kbs(row_coord, col_coord) != square && square != current_square){
 				// TODO: add the square to the knowledge base
 				
 				//Square toBeAddedSquare = new Square();
@@ -66,7 +86,7 @@ public class KnowledgeBase{
 				// update frontier for each square. This prohibits using each element in kbs to update kbs
 				updateFrontier(square);
 			}
-			else if(kbs.get(row_coord).get(col_coord) != square && square == current_square) {
+			else if(get_Kbs(row_coord, col_coord) != square && square == current_square) {
 				//TODO: add the current square to the knowledge base
 				kbs.get(row_coord).set(col_coord, square);
 				
