@@ -9,6 +9,7 @@ public class Square {
     // variable to hold x,y coordinates of square
     public int row, col;
     public boolean visited;
+    public boolean fake = false;
 
     private static final int env_size = EnvType.values().length;
 
