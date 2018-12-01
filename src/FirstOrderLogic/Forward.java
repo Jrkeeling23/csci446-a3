@@ -1,5 +1,7 @@
 package FirstOrderLogic;
 
+import wumpasWorld.Square;
+
 //Checks if the Agent can move forward
 @FunctionalInterface
 public interface Forward {
