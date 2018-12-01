@@ -11,12 +11,16 @@ public class MazeBuilder {
 	public MazeBuilder(int size) {
 		maze = new Square[size][size];
 		
-		// Initialize all squares, and place pits
+		// Initialize all squares
 		for (int row=0; row<size; row++) {
-			for (int col=0; col<size; row++) {
+			for (int col=0; col<size; col++) {
 				// set the row and col of each Square
 				maze[row][col] = new Square(row, col);
-				
+			}
+		}
+		// since add_object_to_adjs can add beyond the current square, adding objects must be in its own loop
+		for (int row=0; row<size; row++) {
+			for (int col=0; col<size; col++) {
 				// add pit w/ 20% probability
 				double prob = (Math.random() * 100);
 				if (prob <= 20.0 && row != 0 && col != 0) {
@@ -98,7 +102,7 @@ public class MazeBuilder {
 		boolean tested[][] = new boolean[size][size];
 		// Initialize array
 		for (int row=0; row<size; row++) {
-			for (int col=0; col<size; row++) {
+			for (int col=0; col<size; col++) {
 				tested[row][col] = false;
 			}
 		}
@@ -129,7 +133,7 @@ public class MazeBuilder {
 			// repeat if failed and tested array still contains a false
 			no_remaining_squares = true;
 			for (int row=0; row<size; row++) {
-				for (int col=0; col<size; row++) {
+				for (int col=0; col<size; col++) {
 					if (tested[row][col] == false) {
 						no_remaining_squares = false;
 						break;
