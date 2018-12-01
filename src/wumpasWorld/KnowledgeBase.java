@@ -40,11 +40,13 @@ public class KnowledgeBase{
 		//TODO: init current_square in KB so we can make references to it in FOL
 	}
 	
-	public void setCurrentSquare(Square currentS) {
-		currentSquare = currentS;
+	public void setCurrentSquare(Square currentSquare) {
+		current_square = currentSquare;
+		
+		
 	}
 	
-	public void updateKbs(Square adjSquares) {
+	public void updateKbs() {
 		
 	}
 	
