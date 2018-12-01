@@ -12,19 +12,13 @@ public class KnowledgeBase{
 	static boolean wall_hit;
 	static boolean wompus_alive;
 	static boolean have_arrow;
+	static boolean heard_scream;
 	static int points;
-	
-	//TEMP KNOWLEDGE BASE stuff
-	static int b = 0;
-	static int s = 1;
-	static int g = 2;
-	static int w = 3;
-	static int p = 4;
 	
 	// adjacent squares of kbs are added to frontier
 	private ArrayList<Square> frontier = new ArrayList<Square>();
 			
-	Square current_square;
+	static Square current_square;
 	
 	// add adjacent squares of Agent's current location to kbs,(kbs = knowledge base square)
 	ArrayList<ArrayList<Square>> kbs = new ArrayList<ArrayList<Square>>();
@@ -35,6 +29,7 @@ public class KnowledgeBase{
 		wall_hit = false;
 		wompus_alive = true;
 		have_arrow = true;
+		heard_scream = false;
 		points = 0;
 		
 		//TODO: init current_square in KB so we can make references to it in FOL
@@ -42,8 +37,10 @@ public class KnowledgeBase{
 	
 	public void setCurrentSquare(Square currentSquare) {
 		current_square = currentSquare;
-		
-		
+	}
+	
+	public static Square getCurrentSquare() {
+		return current_square;
 	}
 	
 	public void updateKbs() {

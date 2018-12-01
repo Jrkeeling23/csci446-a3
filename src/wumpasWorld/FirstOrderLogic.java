@@ -30,32 +30,34 @@ public class FirstOrderLogic {
 	Climb climb;
 	Forward forward;
 	HitWall hitwall;
+	GameFinished finished;
 	
 	//Initializes the lambda expressions
 	public void init() {
-		breezy = () -> {
-			if(KnowledgeBase.b == EnvType.breeze.ordinal()) {
+		breezy = (s) -> {
+			//Pass in a space and evaluate if it is breezy
+			if(s.has_obj(EnvType.breeze)) {
 				return true;
 			}
 			return false;
 		};
 		
-		smells = () -> {
-			if(KnowledgeBase.s == EnvType.stench.ordinal()) {
+		smells = (s) -> {
+			if(s.has_obj(EnvType.stench)) {
 				return true;
 			}
 			return false;
 		};
 		
 		glitter = () -> {
-			if(KnowledgeBase.g == EnvType.glitter.ordinal()) {
+			if(KnowledgeBase.getCurrentSquare().has_obj(EnvType.glitter)) {
 				return true;
 			}
 			return false;
 		};
 		
-		pit = () -> {
-			if(KnowledgeBase.p == EnvType.pit.ordinal()) {
+		pit = (s) -> {
+			if(s.has_obj(EnvType.pit)) {
 				return true;
 			}
 			return false;
@@ -69,11 +71,12 @@ public class FirstOrderLogic {
 		};
 		
 		//Tests Propositional Logic sentences
-		System.out.println("Breezy: "+(breezy.Breezy() && smells.Smells()));
+		//System.out.println("Breezy: "+(breezy.Breezy() && smells.Smells()));
 		
 		//The Following test combined peices of prepositional logic evaulation statements
 		
-		start = () -> {
+		start = (s) -> {
+			//Uses 0,0 as start & compairs the agent's current pos
 			//TODO: when implementing, use player's location to evaluate this check
 			//Starting location will be initialized into the KB
 			//TBI (To Be Implemented)
@@ -81,8 +84,8 @@ public class FirstOrderLogic {
 		};
 		
 		//Checks if the current space has a living wumpus in it
-		wompus = () -> {
-			if((KnowledgeBase.w == EnvType.wumpus.ordinal())&& wompus_is_alive.wompas_is_alive()) {
+		wompus = (s) -> {
+			if((s.has_obj(EnvType.wumpus))&& wompus_is_alive.wompas_is_alive()) {
 				return true;
 			}
 			return false;
@@ -104,7 +107,7 @@ public class FirstOrderLogic {
 			return false;
 		};
 		
-		System.out.println("The Wompus is here: "+ wompus.is_Wompus());
+		//System.out.println("The Wompus is here: "+ wompus.is_Wompus());
 		
 		grab = () -> {
 			//If the agent sees a glitter, & dosen't have gold, pick up gold and return to start
@@ -117,7 +120,7 @@ public class FirstOrderLogic {
 		//TODO: requires pit & wumpus to be determined based off current Space to function
 		//checks if the player dies after having moved
 		die = () -> {
-			if(pit.Pit()||wompus.is_Wompus()) {
+			if(pit.Pit(KnowledgeBase.getCurrentSquare())||wompus.is_Wompus(KnowledgeBase.getCurrentSquare())) {
 				//Possibly trigger end/break of game loop here
 				return true;
 			}
@@ -125,12 +128,16 @@ public class FirstOrderLogic {
 		};
 		
 		climb = () -> {
-			if(start.is_Start()&&KnowledgeBase.player_has_gold) {
-				//TODO: Trigger flag here for ending game loop & adding points
+			//Checks if the player has the Gold and is at the start position
+			if(start.is_Start(KnowledgeBase.getCurrentSquare())&&KnowledgeBase.player_has_gold) {
+				//trigger game end
+				KnowledgeBase.points += 1000;
+				return true;
 			}
+			return false;
 		};
 		
-		forward = () -> {
+		forward = (s) -> {
 			//TODO: evaluate by maze bounds & player pos tracker
 			if(true) {//if((maze.length<(position_tracker+direction))||((position_tracker+direction)<0))
 				//TODO: update position tracker in Knowledge Base(unless wall has been hit)
@@ -147,6 +154,14 @@ public class FirstOrderLogic {
 				if(!KnowledgeBase.wall_hit) {
 					KnowledgeBase.wall_hit = true;
 				}
+				return true;
+			}
+			return false;
+		};
+		
+		//Returns true if the game is finished
+		finished = () -> {
+			if(die.die()||climb.climb()) {
 				return true;
 			}
 			return false;
