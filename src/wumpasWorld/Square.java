@@ -6,7 +6,7 @@ package wumpasWorld;
  */
 public class Square {
 
-    // variable to hold x,y cordinates of square
+    // variable to hold x,y coordinates of square
     public int row, col;
 
     private static final int env_size = EnvType.values().length;

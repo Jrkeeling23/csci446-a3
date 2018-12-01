@@ -28,12 +28,12 @@ public class MazeBuilder {
 			}
 		}
 		// place wumpus
-		int[] pos = add_1_object_no_pit(EnvType.wumpus);
+		int[] pos = add_1_object(EnvType.wumpus, false);
 		// place all 4 stenches
 		add_object_to_adjs(pos[0], pos[1], EnvType.stench);
 		
 		// place gold
-		add_1_object_no_pit(EnvType.glitter);
+		add_1_object(EnvType.glitter, true);
 		
 	}
 	
@@ -89,9 +89,10 @@ public class MazeBuilder {
 	 * adds the given EnvType to the maze at a random location that is not the starting square or a pit
 	 * 
 	 * @param env the object to place in a random square
+	 * @param no_pit if true will not place the object on a pit
 	 * @return array of {row, col} of the placement
 	 */
-	private int[] add_1_object_no_pit(EnvType env) {
+	private int[] add_1_object(EnvType env, boolean no_pit) {
 		int size = maze.length;
 		// tracks invalid squares that have already been tested
 		boolean tested[][] = new boolean[size][size];
@@ -113,8 +114,8 @@ public class MazeBuilder {
 			
 			// test location
 			if (!tested[rand_row][rand_col]) {
-				if (!maze[rand_row][rand_col].has_pit()) {
-					// square did not contain a pit, add environment object
+				if (!no_pit || (no_pit && !maze[rand_row][rand_col].has_pit())) {
+					// square did not contain a pit or we don't care, add environment object
 					maze[rand_row][rand_col].add_obj(env);
 					int[] coords = {rand_row, rand_col};
 					return coords;
@@ -152,9 +153,11 @@ public class MazeBuilder {
 		
 		// place object
 		maze[rand_row][rand_col].add_obj(env);
-		// remove pit
-		maze[rand_row][rand_col].remove_obj(EnvType.pit);
-		remove_object_from_adjs(rand_row, rand_col, EnvType.breeze);
+		if (no_pit) {
+			// remove pit
+			maze[rand_row][rand_col].remove_obj(EnvType.pit);
+			remove_object_from_adjs(rand_row, rand_col, EnvType.breeze);
+		}
 		// return location
 		int[] coords = {rand_row, rand_col};
 		return coords;

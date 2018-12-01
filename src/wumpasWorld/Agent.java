@@ -21,7 +21,7 @@ public class Agent {
 		// list for all models for a square
 		ArrayList<Square> model_list = new ArrayList<Square>();
 		
-		// get all possible models - use of the gold since it does not affect movement
+		// get all possible models minus the use of the gold since it does not affect inference
 		boolean[][] env_models = bin_count(env_size - 1);
 		
 		// build model list
