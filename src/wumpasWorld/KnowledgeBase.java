@@ -22,12 +22,12 @@ public class KnowledgeBase{
 	static int p = 4;
 	
 	// adjacent squares of kbs are added to frontier
-	private ArrayList<ArrayList<Square>> frontier = new ArrayList<ArrayList<Square>>();
+	private ArrayList<ArrayList<Square>> frontier = new ArrayList<ArrayList<Square>>(5);
 			
 	Square current_square;
 	
 	// add squares that are have been visited or proven by FOL to kbs,(kbs = knowledge base square)
-	ArrayList<ArrayList<Square>> kbs = new ArrayList<ArrayList<Square>>();
+	ArrayList<ArrayList<Square>> kbs = new ArrayList<ArrayList<Square>>(5);
 	
 	public void init() {
 		player_has_gold = false;
@@ -47,15 +47,52 @@ public class KnowledgeBase{
 	}
 	
 	public void updateKbs(Square square) {
-		//TODO: call FOL method to obtain actual "model" of square
+		int col_coord = square.col;
+		int row_coord = square.row;
 		
-		if (!kbs.contains(square)){
+		try {
+			if (kbs.get(row_coord).get(col_coord) != square && square != current_square){
+				// TODO: add the square to the knowledge base
+				
+				//Square toBeAddedSquare = new Square();
+				
+				// update frontier for each square. This prohibits using each element in kbs to update kbs
+				updateFrontier(square);
+			}
+			else if(kbs.get(row_coord).get(col_coord) != square && square == current_square) {
+				//TODO: add the current square to the knowledge base
+				
+			}
+		}
+		catch(Exception arrayindexoutofboundsexception) {}
+			
+	}
+	
+	public void updateFrontier(Square square) {
+		int col_coord = square.col;
+		int row_coord = square.row;
+		// adjacent squares relative to the square's position
+		int[][] adj = {{-1, 0}, {0, -1}, {1, 0}, {0, 1}};
+		
+		// check if adjacent squares are in frontier already or if contained in kbs
+		for (int i = 0 ; i <  adj.length; i ++) {
+			int row = adj[i][0] + row_coord;
+			int col = adj[i][1] + col_coord;
+			
+			Square possibleSquareToAdd = new Square(row,col);
+			try {
+				// if its not in frontier or in kb, add to frontier, else nothing
+				if (frontier.get(row).get(col) != possibleSquareToAdd || kbs.get(row).get(col) != possibleSquareToAdd ){
+					//TODO: add to frontier
+					
+				}
+			}
+			catch(Exception arrayindexoutofboundsexception) {}
+			
 		}
 	}
 	
-	public void updateFrontier() {
-		
-	}
+
 	
 	/**
 	 * Creates a list of all possible models for a square setting gold as false in all cases,
@@ -165,5 +202,34 @@ public class KnowledgeBase{
 		}
 	}
 	
+	private void changeArrayListSize(ArrayList<ArrayList <Square>>  list) {
+		int length = list.size()*2;
+		ArrayList<Square> row;
+		ArrayList<ArrayList <Square>> newList = new ArrayList<ArrayList<Square>>(length);
+		
+		for(int i = 0; i <length; i ++) {
+			row = new ArrayList<Square>(length);
+			for(int j = 0; j <length; j ++) {
+				Square fakeSquare = new Square(i, j);
+				fakeSquare.fake = true;
+				row.add(fakeSquare);
+			}
+			newList.add(row);
+		}
+		
+		mergeLists(list, newList, length);
+			
+	}
+	
+	private void mergeLists(ArrayList<ArrayList <Square>>  list, ArrayList<ArrayList <Square>>  newList, int length) {
+		
+		for(int i = 0; i <length/2; i ++) {
+			for(int j = 0; j < length/2; j++) {
+				if(list.get(i).get(j).fake == false) {
+					newList.get(i).set(j, list.get(i).get(j));
+				}
+			}
+		}
+	}
 	
 }
