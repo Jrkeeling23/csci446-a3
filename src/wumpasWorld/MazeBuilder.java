@@ -27,8 +27,8 @@ public class MazeBuilder {
 				}
 			}
 		}
-		// place wumpas
-		int[] pos = add_1_object_no_pit(EnvType.wumpas);
+		// place wumpus
+		int[] pos = add_1_object_no_pit(EnvType.wumpus);
 		// place all 4 stenches
 		add_object_to_adjs(pos[0], pos[1], EnvType.stench);
 		

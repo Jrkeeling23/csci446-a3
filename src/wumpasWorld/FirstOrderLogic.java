@@ -80,7 +80,7 @@ public class FirstOrderLogic {
 			return false;
 		};
 		
-		//Checks if the current space has a living wompus in it
+		//Checks if the current space has a living wumpus in it
 		wompus = () -> {
 			if((KnowledgeBase.w == EnvType.wumpus.ordinal())&& wompus_is_alive.wompas_is_alive()) {
 				return true;
@@ -88,12 +88,12 @@ public class FirstOrderLogic {
 			return false;
 		};
 		
-		//Fires an arrow if the agent has one, and sets the wompus as dead in the KB if it connects. Also -10pts
+		//Fires an arrow if the agent has one, and sets the wumpus as dead in the KB if it connects. Also -10pts
 		shoot = () -> {
 			if(KnowledgeBase.have_arrow) {
-				//TODO: when implementing, use player's location & wompus location to evaluate this check
-				//Kills wompus if hits
-				/*if(pos & direction align with wompus) {
+				//TODO: when implementing, use player's location & wumpus location to evaluate this check
+				//Kills wumpus if hits
+				/*if(pos & direction align with wumpus) {
 					wompus_alive = false;
 					//Wompus screams
 				}*/
@@ -114,7 +114,7 @@ public class FirstOrderLogic {
 			}
 		};
 		
-		//TODO: requires pit & wompus to be determined based off current Space to function
+		//TODO: requires pit & wumpus to be determined based off current Space to function
 		//checks if the player dies after having moved
 		die = () -> {
 			if(pit.Pit()||wompus.is_Wompus()) {
@@ -136,7 +136,7 @@ public class FirstOrderLogic {
 				//TODO: update position tracker in Knowledge Base(unless wall has been hit)
 				return true;
 			}
-			//You have bumped into a wall/boundry
+			//You have bumped into a wall/boundary
 			return false;
 		};
 		

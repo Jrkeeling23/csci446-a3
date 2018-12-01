@@ -1,5 +1,7 @@
 package wumpasWorld;
 
+import java.util.ArrayList;
+
 public class KnowledgeBase{
 	
 	static boolean player_has_gold;
@@ -17,6 +19,9 @@ public class KnowledgeBase{
 	static int p = 4;
 			
 	Square current_square;
+	
+	// list of all known squares, add whenever a square's contents become certain
+	ArrayList<Square> known_squares = new ArrayList<>();
 	
 	public void init() {
 		player_has_gold = false;
