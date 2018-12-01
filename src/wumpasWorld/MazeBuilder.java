@@ -1,8 +1,9 @@
 package wumpasWorld;
 
 public class MazeBuilder {
-	private Square[][] maze;
+	private static Square[][] maze;
 	private int[][] adj = {{-1, 0}, {0, -1}, {1, 0}, {0, 1}};
+	private static int[] wumpus;
 	
 	/**
 	 * Makes a new Maze of width 'size' and height 'size'
@@ -35,7 +36,8 @@ public class MazeBuilder {
 		int[] pos = add_1_object(EnvType.wumpus, false);
 		// place all 4 stenches
 		add_object_to_adjs(pos[0], pos[1], EnvType.stench);
-		
+		wumpus[0] = pos[0];
+		wumpus[1] = pos[1];
 		// place gold
 		add_1_object(EnvType.glitter, true);
 		
@@ -49,6 +51,76 @@ public class MazeBuilder {
 		return maze;
 	}
 	
+	//Uses the agent's position & direction to verify if the shot being taken hits or not without knowledge of
+	//the wumpus's actual position being reveiled to the agent.
+	public static boolean verifyWumpusHit() {
+			int x = KnowledgeBase.getCurrentSquare().col;
+			int y = KnowledgeBase.getCurrentSquare().row;
+			
+			//Evaluates the direction
+			switch (KnowledgeBase.current_direction) {
+			case north:
+				//y-- checks if the wumpas is aligned with the agent's x coordinate, and that they are firing
+				//in the proper direction.
+				if(x == wumpus[0] && y > wumpus[1]) {
+					return true;
+				}
+			case east:
+				//x++
+				//checks if the wumpus is aligned with agent's y value, & the x pos of agent is less than that of the wumpus's
+				if(y == wumpus[1] && x < wumpus[0]) {
+					return true;
+				}
+			case south:
+				//y++
+				if(x == wumpus[0] && y < wumpus[1]) {
+					return true;
+				}
+			case west:
+				//x--
+				if(y == wumpus[1] && x > wumpus[0]) {
+					return true;
+				}
+			default:
+				System.out.println("Agent has no direction");
+			return false;
+			}
+			
+	}
+	
+	//Checks if the next movement forward the agent is trying to make is valid
+	public static boolean checkValidForward() {
+		int x = KnowledgeBase.getCurrentSquare().col;
+		int y = KnowledgeBase.getCurrentSquare().row;
+		
+		//checks if the agent is going out of bounds when moving in a specific direction
+		switch (KnowledgeBase.current_direction) {
+		case north:
+			//y--
+			if((y-1) >= 0) {
+				return true;
+			}
+		case east:
+			//x++
+			if((x+1) < maze.length) {
+				return true;
+			}
+		case south:
+			//y++
+			if((y+1) < maze.length) {
+				return true;
+			}
+		case west:
+			//x--
+			if((x-1) >= 0) {
+				return true;
+			}
+		default:
+			System.out.println("Agent has no direction");
+
+		return false;
+		}
+	}
 	/**
 	 * adds the given environment object to all square adjacent to the given coordinates
 	 * will ignore out of bounds squares

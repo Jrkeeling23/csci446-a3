@@ -4,5 +4,5 @@ import wumpasWorld.Square;
 
 @FunctionalInterface
 public interface Pit {
-	abstract boolean Pit(Square s);
+	abstract boolean Pit();
 }

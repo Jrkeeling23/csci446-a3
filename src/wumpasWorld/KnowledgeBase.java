@@ -13,7 +13,10 @@ public class KnowledgeBase{
 	static boolean wompus_alive;
 	static boolean have_arrow;
 	static boolean heard_scream;
+	static Direction current_direction;
 	static int points;
+	
+	static int mazeSize;
 	
 	// adjacent squares of kbs are added to frontier
 	private ArrayList<ArrayList<Square>> frontier = new ArrayList<ArrayList<Square>>();
@@ -31,8 +34,12 @@ public class KnowledgeBase{
 		have_arrow = true;
 		heard_scream = false;
 		points = 0;
+		//TODO: Update mazeSize whenever you net gain 1 in either x or y direction (and it is larger than the 
+		//current maze size. But only do so when wall_hit = false
+		mazeSize = 1;
 		
-		//TODO: init current_square in KB so we can make references to it in FOL
+		//Initialzes agent's direction to 'south' (facing down from the top left)
+		current_direction = Direction.south;
 	}
 	
 	public void setCurrentSquare(Square currentSquare) {
