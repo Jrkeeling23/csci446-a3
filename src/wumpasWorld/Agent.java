@@ -16,6 +16,6 @@ public class Agent {
 		current.environment_attributes = currentSquare.environment_attributes;
 		current.visited = true;
 		kb.setCurrentSquare(current);
-				
+						
 	}
 }
