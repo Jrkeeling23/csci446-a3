@@ -2,18 +2,40 @@ package wumpasWorld;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 
 public class Agent {
 	private int[][] adj = {{-1, 0}, {0, -1}, {1, 0}, {0, 1}};
 	// agent needs to have reference to its knowledge base
 	KnowledgeBase kb;
+	ArrayList<Square> follow_path;
 	
-	public Agent() {
+	public Agent(Square start) {
 		kb = new KnowledgeBase();
+		follow_path = new ArrayList<>();
 	}
 	
-	public void getPercept(Square currentSquare) {
+	public void agent_cycle() {
+		// get precepts
+		this.getPrecepts(KnowledgeBase.getCurrentSquare());
+		
+		// don't update frontier if we are following a path
+		// paths can only be on visited squares
+		if (follow_path.size() <= 1) {
+			// update frontier
+			kb.updateFrontier(KnowledgeBase.getCurrentSquare());
+			
+			// trim frontier
+			kb.trimFrontier();
+		}
+		
+		// action query
+		Action action = this.actionQuery();
+		
+		// perform action
+		this.performAction(action);
+	}
+	
+	public void getPrecepts(Square currentSquare) {
 		// create new square instance for knowledge base using the attributes from the actual square
 		Square current = new Square(currentSquare.col, currentSquare.row);
 		current.environment_attributes = currentSquare.environment_attributes;
@@ -22,7 +44,27 @@ public class Agent {
 						
 	}
 	
-	public void actionQuery() {
+	public Action actionQuery() {
+		/*
+		 * 
+			2) else if Agent sees glitter -> get the gold
+			3) else if there are unvisited empty squares in the KBS -> go to the closest one
+			4) else if Wumpus location is known -> shoot Wumpus
+			5) else if Wumpus could be in a set of squares -> shoot at one of them
+			6) else go to the closest frontier square
+
+		 */
+		if (follow_path.size() > 0) {
+			return Action.Follow;
+		}
+		else if (KnowledgeBase.player_has_gold) {
+			this.follow_path = this.get_optimal_path(0, 0);
+			return Action.Follow;
+		}
+		
+	}
+	
+	public void performAction(Action act) {
 		
 	}
 	
@@ -65,10 +107,9 @@ public class Agent {
 		
 		// expand all frontier nodes
 		while (!queue.isEmpty()) {
-			// pop from queue
+			// expand current
 			current = queue.pop();
 			
-			// expand current
 			if (current.data.equals(end)) {
 				// start building solution
 				solution = true;

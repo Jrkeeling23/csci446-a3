@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class Driver {
 	// get size of environment
 	private static final int env_size = EnvType.values().length;
-
+	private static Agent agent = new Agent();
 	public static int points = 0;
 	
 	//TODO: Have the game return points gained/lost as an int at the end of the game

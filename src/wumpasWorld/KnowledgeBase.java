@@ -4,9 +4,6 @@ import java.util.ArrayList;
 
 public class KnowledgeBase{
 	
-	// get size of environment
-	private static final int env_size = EnvType.values().length;
-	
 	static boolean player_has_gold;
 	static boolean player_returning_to_start;
 	static boolean wall_hit;
@@ -62,7 +59,7 @@ public class KnowledgeBase{
 		try {
 			Square tmp = get_Kbs(row, col);
 			// false if square is good
-			return !(!tmp.has_obj(EnvType.pit) && (!tmp.has_obj(EnvType.wumpus) || heard_scream));
+			return !(!tmp.has_obj(EnvType.pit) && (!tmp.has_obj(EnvType.wumpus) || !wompus_alive));
 		}
 		catch(ArrayIndexOutOfBoundsException e) {
 			// assume unknown squares are bad
