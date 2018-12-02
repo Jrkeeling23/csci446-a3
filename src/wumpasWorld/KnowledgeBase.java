@@ -2,8 +2,6 @@ package wumpasWorld;
 
 import java.util.ArrayList;
 
-import FirstOrderLogic.Smells;
-
 public class KnowledgeBase{
 	
 	static boolean player_has_gold;

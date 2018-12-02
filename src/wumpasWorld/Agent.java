@@ -17,7 +17,11 @@ public class Agent {
 	
 	public void agent_cycle(Square agent_square) {
 		// get precepts
-		this.getPrecepts(agent_square);
+		boolean end_game = this.getPrecepts(agent_square);
+		
+		if (end_game) {
+			// TODO end game, update points
+		}
 		
 		// don't update frontier if we are following a path
 		// paths can only be on visited squares
@@ -36,7 +40,7 @@ public class Agent {
 		this.performAction(action);
 	}
 	
-	public void getPrecepts(Square currentSquare) {
+	public boolean getPrecepts(Square currentSquare) {
 		// create new square instance for knowledge base using the attributes from the actual square
 		Square current = new Square(currentSquare.col, currentSquare.row);
 		current.environment_attributes = currentSquare.environment_attributes;
@@ -44,19 +48,20 @@ public class Agent {
 		kb.setCurrentSquare(current);
 		
 		// stuff to do every time a new square is entered
-		// check if the agent died
-		if (FirstOrderLogic.die.die()) {
-			// TODO end the game
+		// check if the agent died or if the agent can escape
+		if (FirstOrderLogic.die.die() || FirstOrderLogic.climb.climb()) {
+			// end the game
+			return true;
 		}
 		// look for the gold
 		FirstOrderLogic.grab.grab();
 		
-		// TODO finish this update
+		// finish this update
 		// update number of stinks found
 		if(current.environment_attributes[2] && !KnowledgeBase.wompus_found) {
 			kb.foundASmell();
 		}
-						
+		return false;			
 	}
 	
 	public Action actionQuery() {
@@ -101,6 +106,97 @@ public class Agent {
 	}
 	
 	/**
+	 * Finds the correct action for going to the target square
+	 * @param target
+	 * @return Action, a rotation or Move
+	 */
+	private Action move_to(Square target) throws IllegalArgumentException {
+		Square current = KnowledgeBase.getCurrentSquare();
+		// valid target square
+		if ((Math.abs(current.row - target.row) == 1 && Math.abs(current.col - target.col) == 0) ||
+				(Math.abs(current.row - target.row) == 0 && Math.abs(current.col - target.col) == 1)) {
+			// get delta pos
+			int dr = target.row - current.row;
+			int dc = target.col - current.col;
+			
+			Direction target_dir;
+			if (dr<0) {
+				target_dir = Direction.north;
+			}
+			else if (dr>0) {
+				target_dir = Direction.south;
+			}
+			else if (dc<0) {
+				target_dir = Direction.west;
+			}
+			else {
+				target_dir = Direction.east;
+			}
+			
+			// Evaluates a move condition
+			if (KnowledgeBase.current_direction == target_dir) {
+				return Action.Move;
+			}
+			
+			// Evaluates rotation direction
+			switch (KnowledgeBase.current_direction) {
+			case north:
+				//y-- 
+				if (target_dir == Direction.west) {
+					return Action.RotateCCW;
+				}
+				else if (target_dir == Direction.east) {
+					return Action.RotateCW;
+				}
+				else {
+					return Action.RotateCW;
+				}
+				
+			case east:
+				//x++
+				if (target_dir == Direction.south) {
+					return Action.RotateCW;
+				}
+				else if (target_dir == Direction.north) {
+					return Action.RotateCCW;
+				}
+				else {
+					return Action.RotateCW;
+				}
+			case south:
+				//y++
+				if (target_dir == Direction.east) {
+					return Action.RotateCCW;
+				}
+				else if (target_dir == Direction.west) {
+					return Action.RotateCW;
+				}
+				else {
+					return Action.RotateCW;
+				}
+			case west:
+				//x--
+				if (target_dir == Direction.south) {
+					return Action.RotateCCW;
+				}
+				else if (target_dir == Direction.north) {
+					return Action.RotateCW;
+				}
+				else {
+					return Action.RotateCW;
+				}
+			default:
+				System.out.println("Agent has no direction");
+				throw new IllegalArgumentException();
+			}
+		}
+		// invalid target square
+		else {
+			throw new IllegalArgumentException();
+		}
+	}
+	
+	/**
 	 * Finds the optimal path to the target square, if one exists
 	 * @param target_row
 	 * @param target_col
@@ -133,11 +229,8 @@ public class Agent {
 		if (path == null) {
 			return false;
 		}
-		// TODO do with 1 search_BFS call?
-		// path existed, so set up for following it
-		Square tmp = path.get(path.size() - 1);
 		// update the follow_path
-		follow_path = get_optimal_path(tmp.row, tmp.col);
+		follow_path = path;
 		
 		return true;
 	}
@@ -154,7 +247,6 @@ public class Agent {
 		return path;
 	}
 	
-	// TODO generalize to allow searching the frontier on a input flag (in same style as first_type)?
 	private ArrayList<Square> search_BFS(Square start, Square end, EnvType env, int search_end_switch){
 		Node<Square> root = new Node<Square>(start);
 		// add start to queue

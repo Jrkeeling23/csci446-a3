@@ -1,5 +1,5 @@
 package wumpasWorld;
 
 public enum Action {
-	Grab, Follow, Shoot, Climb
+	Grab, Follow, Shoot, Climb, Move, RotateCCW, RotateCW
 }
