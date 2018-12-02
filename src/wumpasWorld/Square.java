@@ -45,4 +45,8 @@ public class Square {
         environment_attributes[index] = false;
 
     }
+    
+    public boolean equals(Square squ) {
+    	return this.row == squ.row && this.col == squ.col;
+    }
 }
