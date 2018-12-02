@@ -196,15 +196,14 @@ public class KnowledgeBase{
 		int row_coord = square.row;
 		
 		try {
-			if (get_Kbs(row_coord, col_coord) != square){
+			if (!get_Kbs(row_coord, col_coord).equals(square)){
 				kbs.get(row_coord).set(col_coord, square);
-				updateFrontier(square);
 			}
 		}
 		catch(ArrayIndexOutOfBoundsException e) {
 			changeArrayListSize(kbs);
 		}
-		trimFrontier();
+		
 			
 	}
 	
