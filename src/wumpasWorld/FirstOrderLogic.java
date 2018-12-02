@@ -58,6 +58,7 @@ public class FirstOrderLogic {
 		
 		pit = () -> {
 			if(KnowledgeBase.current_square.has_obj(EnvType.pit)) {
+				System.out.println("The agent has fallen into a pit and starved to death as a result. RIP.");
 				return true;
 			}
 			return false;
@@ -82,6 +83,7 @@ public class FirstOrderLogic {
 		//Checks if the current space has a living wumpus in it
 		wompus = () -> {
 			if((KnowledgeBase.current_square.has_obj(EnvType.wumpus))&& wompus_is_alive.wompas_is_alive()) {
+				System.out.println("The agent stumbled into a Wompus in the dark, and was made into a nice thanksgiving meal.");
 				return true;
 			}
 			return false;
