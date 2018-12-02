@@ -14,6 +14,7 @@ public class Driver {
 			System.out.println("Welcome to Wumpus World! Enter the size of maze you would like to run: ");
 			int maze_size = scan.nextInt();
 			World world = new World(maze_size);
+			point_total += world.points;
 			System.out.println("The agent finished this game with a score of "+world.points+" points, totaling up to a net of "+point_total+"points");
 			System.out.println("\nEnter 'Q' to quit or C to contine: ");
 			String continuePlaying = scan.nextLine();
