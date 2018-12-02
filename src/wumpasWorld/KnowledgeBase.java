@@ -25,8 +25,11 @@ public class KnowledgeBase{
 			
 	static Square current_square;
 	
+	
 	// add squares that are have been visited or proven by FOL to kbs,(kbs = knowledge base square)
-	public ArrayList<ArrayList<Square>> kbs = new ArrayList<ArrayList<Square>>();
+	// set the array list to smallest known possible maze size
+	public ArrayList<ArrayList<Square>> kbs = initializeKbsSize();
+	
 	
 	public void init() {
 		player_has_gold = false;
@@ -240,27 +243,19 @@ public class KnowledgeBase{
 	}
 	
 	public void updateKbs(Square square) { // add squares one at a time to updateKbs
+		// col and row of square 
 		int col_coord = square.col;
 		int row_coord = square.row;
 		
 		try {
-			if (get_Kbs(row_coord, col_coord) != square && square != current_square){
-				// TODO: add the square to the knowledge base
-				
-				//Square toBeAddedSquare = new Square();
-				
-				// update frontier for each square. This prohibits using each element in kbs to update kbs
-				updateFrontier(square);
-			}
-			else if(get_Kbs(row_coord, col_coord) != square && square == current_square) {
-				//TODO: add the current square to the knowledge base
+			if (!get_Kbs(row_coord, col_coord).equals(square)){
 				kbs.get(row_coord).set(col_coord, square);
-				
 			}
 		}
 		catch(ArrayIndexOutOfBoundsException e) {
-			
+			changeArrayListSize(kbs);
 		}
+		
 			
 	}
 	
@@ -278,7 +273,7 @@ public class KnowledgeBase{
 			try {
 				Square tempS = get_Kbs(pos_X, pos_Y);
 				continue;
-			} catch (Exception e) {
+			} catch (ArrayIndexOutOfBoundsException e) {
 				//This should be reached if it meets the conditions for not being in the kbs
 				
 				//Checks for out of bounds issues
@@ -402,6 +397,14 @@ public class KnowledgeBase{
 				}
 			}
 		}
+	}
+	private ArrayList<ArrayList<Square>> initializeKbsSize() {
+		ArrayList<Square> row = new ArrayList<Square>(5);
+		ArrayList<ArrayList<Square>> kbs_to_be = new ArrayList<ArrayList<Square>>(5);
+		for(int i = 0; i< row.size(); i++) {
+			kbs_to_be.add(row);
+		}
+		return kbs_to_be;
 	}
 	
 }
