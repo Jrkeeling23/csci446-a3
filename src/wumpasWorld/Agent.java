@@ -12,6 +12,7 @@ public class Agent {
 	public Agent(Square start) {
 		kb = new KnowledgeBase();
 		follow_path = new ArrayList<>();
+		// TODO finish initial set up of the agent
 	}
 	
 	public void agent_cycle() {
@@ -50,9 +51,9 @@ public class Agent {
 		// look for the gold
 		FirstOrderLogic.grab.grab();
 		
+		// TODO finish this update
 		// update number of stinks found
-		
-		if(current.environment_attributes[2]&&!KnowledgeBase.wompus_found) {
+		if(current.environment_attributes[2] && !KnowledgeBase.wompus_found) {
 			KnowledgeBase.
 		}
 						
@@ -91,7 +92,7 @@ public class Agent {
 	}
 	
 	public void performAction(Action act) {
-		
+		// TODO add method body
 	}
 	
 	/**
@@ -136,6 +137,7 @@ public class Agent {
 		return true;
 	}
 	
+	// TODO generalize to allow searching the frontier on a input flag?
 	private ArrayList<Square> search_BFS(Square start, Square end, boolean first_type){
 		Node<Square> root = new Node<Square>(start);
 		// add start to queue

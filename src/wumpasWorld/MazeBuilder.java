@@ -198,7 +198,7 @@ public class MazeBuilder {
 			
 			// test location
 			if (!tested[rand_row][rand_col]) {
-				if (!no_pit || (no_pit && !maze[rand_row][rand_col].has_pit())) {
+				if (!no_pit || (no_pit && !maze[rand_row][rand_col].has_obj(EnvType.pit))) {
 					// square did not contain a pit or we don't care, add environment object
 					maze[rand_row][rand_col].add_obj(env);
 					int[] coords = {rand_row, rand_col};

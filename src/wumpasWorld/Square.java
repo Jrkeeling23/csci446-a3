@@ -29,21 +29,14 @@ public class Square {
     	return environment_attributes[env.ordinal()];
     }
 
-    public boolean has_pit() {
-    	return environment_attributes[EnvType.pit.ordinal()];
-    }
-
     public void add_obj(EnvType env) {
         int index = env.ordinal();
         environment_attributes[index] = true;
-
-
     }
 
     public void remove_obj(EnvType env) {
         int index = env.ordinal();
         environment_attributes[index] = false;
-
     }
     
     public boolean equals(Square squ) {

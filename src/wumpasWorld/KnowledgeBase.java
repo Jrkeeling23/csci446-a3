@@ -49,7 +49,6 @@ public class KnowledgeBase{
 	public void setCurrentSquare(Square currentSquare) {
 		current_square = currentSquare;
 		updateKbs(currentSquare);
-		
 	}
 	
 	public static Square getCurrentSquare() {
@@ -87,7 +86,7 @@ public class KnowledgeBase{
 			
 			//checks if they are on opposite ends: (equal on one axis or another)
 			if(smellySpaces.get(0)[0] == smellySpaces.get(1)[0]) {
-				//horizontal match, the wompus is inbetween
+				//horizontal match, the wompus is in between
 				wompus_found = true;
 				//for finding mid point
 				int y1 = smellySpaces.get(0)[1];
@@ -102,7 +101,7 @@ public class KnowledgeBase{
 				wompus_Pos[0] = smellySpaces.get(0)[0];
 				wompus_Pos[1] = y_val;
 			}else if(smellySpaces.get(0)[1] == smellySpaces.get(1)[1]) {
-				//vertical match, the wompus is inbetween
+				//vertical match, the wompus is in between
 				wompus_found = true;
 				
 				//for finding mid point
@@ -167,7 +166,8 @@ public class KnowledgeBase{
 	}
 	
 	/**
-	 * gets the square located at the coordinates in KBS if it exists
+	 * gets the square located at the coordinates in KBS if it exists, and throws an
+	 * ArrayIndexOutOfBoundsException if it does not
 	 * @param row
 	 * @param col
 	 * @return the square in KBS at row, col
@@ -260,7 +260,7 @@ public class KnowledgeBase{
 			for (int[] pos : surrounding_positions) {
 				//Adds the actual square to surrounding squares
 				try {
-					//In a try catch incase we don't actually know about that square
+					//In a try catch in case we don't actually know about that square
 					Square temp_square = get_Kbs(pos[0],pos[1]);
 							if(temp_square.visited)
 								surrounding_squares.add(temp_square);
@@ -282,7 +282,7 @@ public class KnowledgeBase{
 				}
 			}
 			
-			//Second Order Checks 
+			// TODO Second Order Checks 
 			//Wumpus check(if we have 2 or more known smelly locations, infer the location of the wompus & ignore other wompus checks
 		}
 		//Checks all the modelset's on the frontier for if they have a length of 1, and if so, 
