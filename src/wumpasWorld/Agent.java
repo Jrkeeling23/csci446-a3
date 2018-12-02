@@ -56,15 +56,6 @@ public class Agent {
 	}
 	
 	public Action actionQuery() {
-		/*
-		 * 
-			2) else if Agent sees glitter -> get the gold
-			
-			4) else if Wumpus location is known & not on a pit -> shoot Wumpus
-			5) else if Wumpus could be in a set of squares & no pit -> shoot at one of them
-			6) else go to the closest frontier square
-
-		 */
 		
 		if (follow_path.size() > 0) {
 			return Action.Follow;
@@ -76,8 +67,24 @@ public class Agent {
 		else if (closest_unvisited()) {
 			return Action.Follow;
 		}
-		
-		
+		else if (KnowledgeBase.wompus_found && KnowledgeBase.wompus_alive &&
+				!kb.get_Kbs(KnowledgeBase.wompus_Pos[0], KnowledgeBase.wompus_Pos[1]).has_obj(EnvType.pit)) {
+			// TODO Requires moving to the correct square first, 
+			// shooting square selection / aiming / firing in performAction
+			return Action.Shoot;
+		}
+		else if () {
+			// TODO Wumpus could be in a set of squares & no pit -> shoot at one of them
+			// Requires moving to the correct square first, 
+			// shooting square selection / aiming / firing in performAction
+			return Action.Shoot;
+		}
+		else {
+			// TODO go to the closest frontier square
+			// find path to closest frontier square
+			// update follow_path
+			return Action.Follow;
+		}
 	}
 	
 	public void performAction(Action act) {
