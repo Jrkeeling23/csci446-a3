@@ -136,7 +136,7 @@ public class FirstOrderLogic {
 		
 		forward = () -> {
 			if(MazeBuilder.checkValidForward()) {
-				//TODO: MOVE HERE (before the check below)
+				//TODO: Use with move to check that it is valid, and to update mazeSize
 				
 				//Updates the known maze size in KBS
 				if(KnowledgeBase.current_square.col+1 > KnowledgeBase.mazeSize) {
@@ -151,6 +151,14 @@ public class FirstOrderLogic {
 				if(!KnowledgeBase.wall_hit) {
 				KnowledgeBase.wall_hit = true;
 				}
+			}
+			return false;
+		};
+		
+		//checks if there is a wall at the position specified (if the pos is out of bounds)
+		hitwall = (x,y) -> {
+			if(!MazeBuilder.outOfBoundsCheck(x)||!MazeBuilder.outOfBoundsCheck(y)||(x<0)||(y<0)) {
+				return true;
 			}
 			return false;
 		};

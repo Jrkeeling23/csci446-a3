@@ -8,6 +8,9 @@ public class KnowledgeBase{
 	static boolean player_returning_to_start;
 	static boolean wall_hit;
 	static boolean wompus_alive;
+	static boolean wompus_found;
+	static int[] wompus_Pos;
+	static int smellySpaces;
 	static boolean have_arrow;
 	static boolean heard_scream;
 	static Direction current_direction;
@@ -28,6 +31,8 @@ public class KnowledgeBase{
 		player_returning_to_start = false;
 		wall_hit = false;
 		wompus_alive = true;
+		wompus_found = false;
+		smellySpaces = 0;
 		have_arrow = true;
 		heard_scream = false;
 		points = 0;
@@ -122,18 +127,24 @@ public class KnowledgeBase{
 		
 		// check if adjacent squares are in frontier already or if contained in kbs
 		for (int[] pos : adjacent_squares) {
+			int pos_X = pos[0]+col_coord;
+			int pos_Y = pos[1]+row_coord;
 			try {
-				Square tempS = get_Kbs(pos[0]+col_coord,pos[1]+row_coord);
+				Square tempS = get_Kbs(pos_X, pos_Y);
 				continue;
 			} catch (Exception e) {
 				//This should be reached if it meets the conditions for not being in the kbs
-				for (ModelSet ms : frontier) {
-					//checks if the adjacent node is already in the frontier
-					if((ms.getX() == pos[0]+col_coord)&&(ms.getY() == pos[1]+row_coord)) {
-						break;
-					}else {
-						//Adds the adjacent square to the frontier
-						frontier.add(new ModelSet(pos[0]+col_coord, pos[1]+row_coord));
+				
+				//Checks for out of bounds issues
+				if(MazeBuilder.outOfBoundsCheck(pos_X)&&MazeBuilder.outOfBoundsCheck(pos_Y)&&(pos_X>=0)&&(pos_Y>=0)) {
+					for (ModelSet ms : frontier) {
+						//checks if the adjacent node is already in the frontier
+						if((ms.getX() == pos_X)&&(ms.getY() == pos_Y)) {
+							break;
+						}else {
+							//Adds the adjacent square to the frontier
+							frontier.add(new ModelSet(pos_X, pos_Y));
+						}
 					}
 				}
 			}
@@ -156,24 +167,29 @@ public class KnowledgeBase{
 				//Adds the actual square to surrounding squares
 				try {
 					//In a try catch incase we don't actually know about that square
-					surrounding_squares.add(get_Kbs(pos[0],pos[1]));
+					Square temp_square = get_Kbs(pos[0],pos[1]);
+							if(temp_square.visited)
+								surrounding_squares.add(temp_square);
 				} catch (Exception e) {
 					//Ignore
 				}
 			}
 			
-			//Check if any of the surrounding squares that we know about are not breezy/smelly
+			//Check if any of the surrounding squares that we know about are not breezy/smelly (First order checks)
 			for (Square square : surrounding_squares) {
 				//checks if the square is breezy
 				if(!FirstOrderLogic.breezy.Breezy(square)) {
 					//remove the breezy element
 					ms.removeModel(EnvType.breeze);
 				}
-				if(!FirstOrderLogic.smells.Smells(square)) {
+				if(!FirstOrderLogic.smells.Smells(square)||wompus_found) {
 					//remove the smells element
 					ms.removeModel(EnvType.stench);
 				}
 			}
+			
+			//Second Order Checks 
+			//Wumpus check(if we have 2 or more known smelly locations, infer the location of the wompus & ignore other wompus checks
 		}
 		//Checks all the modelset's on the frontier for if they have a length of 1, and if so, 
 		//puts them on the KB & removes from frontier
