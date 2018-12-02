@@ -41,6 +41,17 @@ public class Agent {
 		current.environment_attributes = currentSquare.environment_attributes;
 		current.visited = true;
 		kb.setCurrentSquare(current);
+		
+		// stuff to do every time a new square is entered
+		// check if the agent died
+		if (FirstOrderLogic.die.die()) {
+			// TODO end the game
+		}
+		// look for the gold
+		FirstOrderLogic.grab.grab();
+		
+		// update number of stinks found
+		
 						
 	}
 	
@@ -48,12 +59,13 @@ public class Agent {
 		/*
 		 * 
 			2) else if Agent sees glitter -> get the gold
-			3) else if there are unvisited empty squares in the KBS -> go to the closest one
-			4) else if Wumpus location is known -> shoot Wumpus
-			5) else if Wumpus could be in a set of squares -> shoot at one of them
+			
+			4) else if Wumpus location is known & not on a pit -> shoot Wumpus
+			5) else if Wumpus could be in a set of squares & no pit -> shoot at one of them
 			6) else go to the closest frontier square
 
 		 */
+		
 		if (follow_path.size() > 0) {
 			return Action.Follow;
 		}
@@ -61,6 +73,10 @@ public class Agent {
 			this.follow_path = this.get_optimal_path(0, 0);
 			return Action.Follow;
 		}
+		else if (closest_unvisited()) {
+			return Action.Follow;
+		}
+		
 		
 	}
 	
@@ -80,7 +96,7 @@ public class Agent {
 			Square current = KnowledgeBase.getCurrentSquare();
 			Square target = kb.get_Kbs(target_row, target_col);
 			// find optimal path to target
-			ArrayList<Square> path = search_BFS(current, target);
+			ArrayList<Square> path = search_BFS(current, target, true);
 			if (path == null) {
 				return null;
 			}
@@ -92,7 +108,25 @@ public class Agent {
 		}
 	}
 	
-	private ArrayList<Square> search_BFS(Square start, Square end){
+	public boolean closest_unvisited() {
+		// get current square
+		Square current = KnowledgeBase.getCurrentSquare();
+		// get the closest Square that has not been visited
+		ArrayList<Square> path = search_BFS(current, null, true);
+		// path not found
+		if (path == null) {
+			return false;
+		}
+		// TODO do with 1 search_BFS call?
+		// path existed, so set up for following it
+		Square tmp = path.get(path.size() - 1);
+		// update the follow_path
+		follow_path = get_optimal_path(tmp.row, tmp.col);
+		
+		return true;
+	}
+	
+	private ArrayList<Square> search_BFS(Square start, Square end, boolean first_type){
 		Node<Square> root = new Node<Square>(start);
 		// add start to queue
 		LinkedList<Node<Square>> queue = new LinkedList<Node<Square>>();
@@ -110,7 +144,12 @@ public class Agent {
 			// expand current
 			current = queue.pop();
 			
-			if (current.data.equals(end)) {
+			if (first_type && current.data.equals(end)) {
+				// start building solution
+				solution = true;
+				break;
+			}
+			else if (!first_type && !current.data.visited) {
 				// start building solution
 				solution = true;
 				break;
