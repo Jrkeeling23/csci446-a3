@@ -53,6 +53,24 @@ public class KnowledgeBase{
 	}
 	
 	/**
+	 * Tests if a square is dangerous
+	 * @param row
+	 * @param col
+	 * @return true if the square is potentially dangerous
+	 */
+	public boolean is_dangerous_square(int row, int col) {
+		try {
+			Square tmp = get_Kbs(row, col);
+			// false if square is good
+			return !(!tmp.has_obj(EnvType.pit) && (!tmp.has_obj(EnvType.wumpus) || heard_scream));
+		}
+		catch(ArrayIndexOutOfBoundsException e) {
+			// assume unknown squares are bad
+			return true;
+		}	
+	}
+	
+	/**
 	 * gets the square located at the coordinates in KBS if it exists
 	 * @param row
 	 * @param col
@@ -92,7 +110,9 @@ public class KnowledgeBase{
 				
 			}
 		}
-		catch(Exception arrayindexoutofboundsexception) {}
+		catch(ArrayIndexOutOfBoundsException e) {
+			
+		}
 			
 	}
 	
@@ -115,7 +135,9 @@ public class KnowledgeBase{
 					
 				}
 			}
-			catch(Exception arrayindexoutofboundsexception) {}
+			catch(ArrayIndexOutOfBoundsException e) {
+				
+			}
 			
 		}
 	}
