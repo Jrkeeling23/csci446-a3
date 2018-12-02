@@ -124,6 +124,9 @@ public class ModelSet {
 		return models;
 	}
 	
+	public void removeSafe() {
+		models.remove(0);
+	}
 	
 	//Remove elements of a certain type
 	public void removeModel(EnvType e) {

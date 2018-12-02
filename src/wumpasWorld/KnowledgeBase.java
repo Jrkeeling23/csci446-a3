@@ -308,10 +308,12 @@ public class KnowledgeBase{
 				//Adds the actual square to surrounding squares
 				try {
 					//In a try catch incase we don't actually know about that square
-					Square temp_square = get_Kbs(pos[0],pos[1]);
+					if(!(MazeBuilder.outOfBoundsCheck(pos[0])||MazeBuilder.outOfBoundsCheck(pos[1])||(pos[0]<0)||(pos[1]<0))) {
+						Square temp_square = get_Kbs(pos[0],pos[1]);
 							if(temp_square.visited)
 								surrounding_squares.add(temp_square);
-				} catch (Exception e) {
+					}
+				} catch (ArrayIndexOutOfBoundsException e) {
 					//Ignore
 				}
 			}
@@ -320,17 +322,82 @@ public class KnowledgeBase{
 			for (Square square : surrounding_squares) {
 				//checks if the square is breezy
 				if(!FirstOrderLogic.breezy.Breezy(square)) {
-					//remove the breezy element
-					ms.removeModel(EnvType.breeze);
+					//remove the possibility of it being a pit
+					ms.removeModel(EnvType.pit);
+					
+					
 				}
 				if(!FirstOrderLogic.smells.Smells(square)||wompus_found) {
-					//remove the smells element
-					ms.removeModel(EnvType.stench);
+					//remove the possibility of this square being a wumpus
+					ms.removeModel(EnvType.wumpus);
 				}
+				//attempts 2nd order logic to deduce the wompus's location if it hasn't been found already
+				if(!wompus_found&&FirstOrderLogic.smells.Smells(square)) {
+					//Needs to check now to see if we know about all the surrounding squares (in maze bounds)
+					ArrayList<int[]> checkIfKnownPos = getSurroundingPos(square.col, square.row);
+					ArrayList<Square> checkIfKnown =  new ArrayList<>();
+					int unknown = 0;
+					
+					for (int[] pos : checkIfKnownPos) {
+						//Adds the actual square to surrounding squares
+						try {
+							//In a try catch in case we don't actually know about that square
+							//check for if the position is within the maze bounds, otherwise don't attempt to add it
+							if(!(MazeBuilder.outOfBoundsCheck(pos[0])||MazeBuilder.outOfBoundsCheck(pos[1])||(pos[0]<0)||(pos[1]<0))) {
+								Square temp_square = get_Kbs(pos[0],pos[1]);
+									checkIfKnown.add(temp_square);
+							}
+						} catch (ArrayIndexOutOfBoundsException e) {
+							//We don't know enough about this square, iterate unknown by 1
+							unknown++;
+						}
+					}
+					if(unknown > 1) {
+						//can't make inference
+					}else if(unknown == 1){
+						//make inference on unknown square (remove the safe square)
+						ms.removeSafe();
+						
+					}else {
+						System.out.println("No unknown squares?");
+					}
+					//if there is more than one unknown space (inside maze bounds) then we know nothing.
+					//If there is only one unknown space, that is the wompus
+				}
+				
+				//Attempt second order logic for finding pits
+				if(FirstOrderLogic.breezy.Breezy(square)) {
+					//Needs to check now to see if we know about all the surrounding squares (in maze bounds)
+					ArrayList<int[]> checkIfKnownPos = getSurroundingPos(square.col, square.row);
+					ArrayList<Square> checkIfKnown =  new ArrayList<>();
+					int unknown = 0;
+					
+					for (int[] pos : checkIfKnownPos) {
+						//Adds the actual square to surrounding squares
+						try {
+							//In a try catch in case we don't actually know about that square
+							//check for if the position is within the maze bounds, otherwise don't attempt to add it
+							if(!(MazeBuilder.outOfBoundsCheck(pos[0])||MazeBuilder.outOfBoundsCheck(pos[1])||(pos[0]<0)||(pos[1]<0))) {
+								Square temp_square = get_Kbs(pos[0],pos[1]);
+									checkIfKnown.add(temp_square);
+							}
+						} catch (ArrayIndexOutOfBoundsException e) {
+							//We don't know enough about this square, iterate unknown by 1
+							unknown++;
+						}
+					}
+					if(unknown > 1) {
+						//can't make inference
+					}else if(unknown == 1){
+						//make inference on unknown square (remove the safe square)
+						ms.removeSafe();
+						
+					}else {
+						System.out.println("No unknown squares?");
+					}
+				}
+				
 			}
-			
-			//Second Order Checks 
-			//Wumpus check(if we have 2 or more known smelly locations, infer the location of the wompus & ignore other wompus checks
 		}
 		//Checks all the modelset's on the frontier for if they have a length of 1, and if so, 
 		//puts them on the KB & removes from frontier
