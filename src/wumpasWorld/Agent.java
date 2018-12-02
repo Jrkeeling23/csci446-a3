@@ -15,9 +15,9 @@ public class Agent {
 		// TODO finish initial set up of the agent
 	}
 	
-	public void agent_cycle() {
+	public void agent_cycle(Square agent_square) {
 		// get precepts
-		this.getPrecepts(KnowledgeBase.getCurrentSquare());
+		this.getPrecepts(agent_square);
 		
 		// don't update frontier if we are following a path
 		// paths can only be on visited squares
@@ -60,32 +60,35 @@ public class Agent {
 	}
 	
 	public Action actionQuery() {
-		
-		if (follow_path.size() > 0) {
+		if (KnowledgeBase.wompus_found && KnowledgeBase.wompus_alive &&
+				!kb.get_Kbs(KnowledgeBase.wompus_Pos[0], KnowledgeBase.wompus_Pos[1]).has_obj(EnvType.pit) &&
+				KnowledgeBase.current_square.has_obj(EnvType.stench)) {
+			return Action.Shoot;
+		}
+		else if (follow_path.size() > 0) {
 			return Action.Follow;
 		}
 		else if (KnowledgeBase.player_has_gold) {
 			this.follow_path = this.get_optimal_path(0, 0);
 			return Action.Follow;
 		}
-		else if (closest_unvisited()) {
+		// if there are unvisited empty squares in the KBS, go to the closest one
+		else if (this.closest_unvisited()) {
 			return Action.Follow;
 		}
+		// Wumpus is still alive and not on a pit -> navigate to adj square
 		else if (KnowledgeBase.wompus_found && KnowledgeBase.wompus_alive &&
 				!kb.get_Kbs(KnowledgeBase.wompus_Pos[0], KnowledgeBase.wompus_Pos[1]).has_obj(EnvType.pit)) {
-			// TODO Requires moving to the correct square first, 
-			// shooting square selection / aiming / firing in performAction
-			return Action.Shoot;
-		}
-		else if () {
-			// TODO Wumpus could be in a set of squares & no pit -> shoot at one of them
-			// Requires moving to the correct square first, 
-			// shooting square selection / aiming / firing in performAction
-			return Action.Shoot;
+			// Requires moving to the correct square first
+			this.follow_path = this.closest_EnvType(EnvType.stench);
+			return Action.Follow;
 		}
 		else {
-			// TODO go to the closest frontier square
+			// go to the closest frontier square
+			int[] pos = kb.closest_frontier_square();
+			
 			// find path to closest frontier square
+			this.follow_path = this.get_optimal_path(pos[0], pos[1]);
 			// update follow_path
 			return Action.Follow;
 		}
@@ -93,13 +96,15 @@ public class Agent {
 	
 	public void performAction(Action act) {
 		// TODO add method body
+		// points for each action
+		// run forward check
 	}
 	
 	/**
 	 * Finds the optimal path to the target square, if one exists
 	 * @param target_row
 	 * @param target_col
-	 * @return path List of squares in the optimal path, null if there is no path to the square
+	 * @return path List of squares in the optimal path, empty if there is no path to the square
 	 */
 	public ArrayList<Square> get_optimal_path(int target_row, int target_col) {
 		try {
@@ -107,15 +112,15 @@ public class Agent {
 			Square current = KnowledgeBase.getCurrentSquare();
 			Square target = kb.get_Kbs(target_row, target_col);
 			// find optimal path to target
-			ArrayList<Square> path = search_BFS(current, target, true);
+			ArrayList<Square> path = search_BFS(current, target, null, 0);
 			if (path == null) {
-				return null;
+				return new ArrayList<Square>();
 			}
 			// return resulting path
 			return path;
 		} 
 		catch(ArrayIndexOutOfBoundsException e) {
-			return null;
+			return new ArrayList<Square>();
 		}
 	}
 	
@@ -123,7 +128,7 @@ public class Agent {
 		// get current square
 		Square current = KnowledgeBase.getCurrentSquare();
 		// get the closest Square that has not been visited
-		ArrayList<Square> path = search_BFS(current, null, true);
+		ArrayList<Square> path = search_BFS(current, null, null, 1);
 		// path not found
 		if (path == null) {
 			return false;
@@ -137,8 +142,20 @@ public class Agent {
 		return true;
 	}
 	
-	// TODO generalize to allow searching the frontier on a input flag?
-	private ArrayList<Square> search_BFS(Square start, Square end, boolean first_type){
+	public ArrayList<Square> closest_EnvType(EnvType env){
+		// get current square
+		Square current = KnowledgeBase.getCurrentSquare();
+		// find optimal path to closest stench
+		ArrayList<Square> path = search_BFS(current, null, env, 2);
+		if (path == null) {
+			return new ArrayList<Square>();
+		}
+		// return resulting path
+		return path;
+	}
+	
+	// TODO generalize to allow searching the frontier on a input flag (in same style as first_type)?
+	private ArrayList<Square> search_BFS(Square start, Square end, EnvType env, int search_end_switch){
 		Node<Square> root = new Node<Square>(start);
 		// add start to queue
 		LinkedList<Node<Square>> queue = new LinkedList<Node<Square>>();
@@ -156,12 +173,17 @@ public class Agent {
 			// expand current
 			current = queue.pop();
 			
-			if (first_type && current.data.equals(end)) {
+			if (search_end_switch==0 && current.data.equals(end)) {
 				// start building solution
 				solution = true;
 				break;
 			}
-			else if (!first_type && !current.data.visited) {
+			else if (search_end_switch==1 && !current.data.visited) {
+				// start building solution
+				solution = true;
+				break;
+			}
+			else if (!current.data.has_obj(env)) {
 				// start building solution
 				solution = true;
 				break;

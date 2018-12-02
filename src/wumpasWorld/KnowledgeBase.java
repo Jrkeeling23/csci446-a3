@@ -73,6 +73,29 @@ public class KnowledgeBase{
 		}	
 	}
 	
+	/**
+	 * Finds the closest square on the frontier, or {Integer.MAX_VALUE, Integer.MAX_VALUE} if the
+	 * frontier is empty
+	 * @return {row, col} of closest square in the frontier
+	 */
+	public int[] closest_frontier_square() {
+		int row = current_square.row;
+		int col = current_square.col;
+		int[] closest_pos = {Integer.MAX_VALUE, Integer.MAX_VALUE};
+		
+		for (int i=0; i<frontier.size(); i++) {
+			// find distances to each location
+			double r1 = Math.pow((closest_pos[0] - row), 2) + Math.pow((closest_pos[1] - col), 2);
+			double r2 = Math.pow((frontier.get(i).getX() - row), 2) + Math.pow((frontier.get(i).getY() - col), 2);
+			if (r2 < r1) {
+				// update value
+				closest_pos[0] = frontier.get(i).getX();
+				closest_pos[1] = frontier.get(i).getY();
+			}
+		}
+		return closest_pos;
+	}
+	
 	//Tried to deduce where the wompus is early via 2nd order logic
 	public void foundASmell() {
 		//get current square pos x and y 
