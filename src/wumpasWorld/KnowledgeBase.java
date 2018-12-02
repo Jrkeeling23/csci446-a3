@@ -119,26 +119,27 @@ public class KnowledgeBase{
 	public void updateFrontier(Square square) {
 		int col_coord = square.col;
 		int row_coord = square.row;
-		// adjacent squares relative to the square's position
-		int[][] adj = {{-1, 0}, {0, -1}, {1, 0}, {0, 1}};
+		
+		//Makes a list of the adjacent squares
+		ArrayList<int[]> adjacent_squares = getSurroundingPos(col_coord, row_coord);
 		
 		// check if adjacent squares are in frontier already or if contained in kbs
-		for (int i = 0 ; i <  adj.length; i ++) {
-			int row = adj[i][0] + row_coord;
-			int col = adj[i][1] + col_coord;
-			
-			Square possibleSquareToAdd = new Square(row,col);
+		for (int[] pos : adjacent_squares) {
 			try {
-				// if its not in frontier or in kb, add to frontier, else nothing
-				if (frontier.get(row).getModels().get(col) != possibleSquareToAdd || kbs.get(row).get(col) != possibleSquareToAdd ){
-					//TODO: add to frontier
-					
+				Square tempS = get_Kbs(pos[0]+col_coord,pos[1]+row_coord);
+				continue;
+			} catch (Exception e) {
+				//This should be reached if it meets the conditions for not being in the kbs
+				for (ModelSet ms : frontier) {
+					//checks if the adjacent node is already in the frontier
+					if((ms.getX() == pos[0]+col_coord)&&(ms.getY() == pos[1]+row_coord)) {
+						break;
+					}else {
+						//Adds the adjacent square to the frontier
+						frontier.add(new ModelSet(pos[0]+col_coord, pos[1]+row_coord));
+					}
 				}
 			}
-			catch(ArrayIndexOutOfBoundsException e) {
-				
-			}
-			
 		}
 	}
 	
