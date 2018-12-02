@@ -110,7 +110,7 @@ public class KnowledgeBase{
 			Square possibleSquareToAdd = new Square(row,col);
 			try {
 				// if its not in frontier or in kb, add to frontier, else nothing
-				if (frontier.get(row).get(col) != possibleSquareToAdd || kbs.get(row).get(col) != possibleSquareToAdd ){
+				if (frontier.get(row).getModels().get(col) != possibleSquareToAdd || kbs.get(row).get(col) != possibleSquareToAdd ){
 					//TODO: add to frontier
 					
 				}
@@ -118,6 +118,10 @@ public class KnowledgeBase{
 			catch(Exception arrayindexoutofboundsexception) {}
 			
 		}
+	}
+	
+	public static void trimFrontier() {
+		
 	}
 	
 	private void changeArrayListSize(ArrayList<ArrayList <Square>>  list) {

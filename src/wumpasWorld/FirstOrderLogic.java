@@ -70,9 +70,6 @@ public class FirstOrderLogic {
 			return false;
 		};
 		
-		//Tests Propositional Logic sentences
-		//System.out.println("Breezy: "+(breezy.Breezy() && smells.Smells()));
-		
 		//The Following test combined peices of prepositional logic evaulation statements
 		
 		start = (s) -> {
@@ -93,11 +90,14 @@ public class FirstOrderLogic {
 		//Fires an arrow if the agent has one, and sets the wumpus as dead in the KB if it connects. Also -10pts
 		shoot = () -> {
 			if(KnowledgeBase.have_arrow) {
-				System.out.println("You fire you're arrow.");
+				System.out.print("You fire you're arrow,");
 				if(MazeBuilder.verifyWumpusHit()) {
-					System.out.print("You hear a howling cry in the distance.");
+					System.out.print(" and hear the sound of it piercing flesh, followed by a distant howling cry");
 					KnowledgeBase.wompus_alive = false;
+				}else {
+					System.out.print(" and hear nothing other than it wistle through the darkness followed by a sharp 'tik'! And silence.");
 				}
+				System.out.print(".\n");
 				
 				KnowledgeBase.have_arrow = false;
 				KnowledgeBase.points -= 10;
@@ -106,8 +106,6 @@ public class FirstOrderLogic {
 			System.out.println("You've already used up all your arrows!");
 			return false;
 		};
-		
-		//System.out.println("The Wompus is here: "+ wompus.is_Wompus());
 		
 		grab = () -> {
 			//If the agent sees a glitter, & dosen't have gold, pick up gold and return to start
