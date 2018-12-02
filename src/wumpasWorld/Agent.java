@@ -64,6 +64,10 @@ public class Agent {
 		return false;			
 	}
 	
+	/**
+	 * Finds the Action that should be performed at the moment
+	 * @return Action
+	 */
 	public Action actionQuery() {
 		if (KnowledgeBase.wompus_found && KnowledgeBase.wompus_alive &&
 				!kb.get_Kbs(KnowledgeBase.wompus_Pos[0], KnowledgeBase.wompus_Pos[1]).has_obj(EnvType.pit) &&
@@ -99,10 +103,48 @@ public class Agent {
 		}
 	}
 	
+	/**
+	 * Performs the action given by Action Query and updates points
+	 * @param Action
+	 */
 	public void performAction(Action act) {
-		// TODO add method body
-		// points for each action
-		// run forward check
+		if (act == Action.Follow) {
+			Square tmp = follow_path.get(0);
+			Action movement = move_to(tmp);
+			// move or rotate
+			if (movement == Action.Move) {
+				if (FirstOrderLogic.forward.check_forward()) {
+					// move the agent
+					// set next square as current
+					KnowledgeBase.current_square = tmp;
+					// remove square from follow list
+					follow_path.remove(0);
+					// update points
+					KnowledgeBase.points -= 1;
+				}
+				else {
+					// TODO move not possible
+					follow_path.clear();
+					KnowledgeBase.points -= 1;
+				}
+			}
+			else if (movement == Action.RotateCW) {
+				// rotate
+				KnowledgeBase.rotate(movement);
+			}
+		}
+		else if (act == Action.Shoot) {
+			// get how to point at the wumpus
+			Action tmp = point_at_target_action(kb.get_Kbs(KnowledgeBase.wompus_Pos[0], KnowledgeBase.wompus_Pos[1]));
+			if (tmp == Action.Move) {
+				// shoot
+				FirstOrderLogic.shoot.shoot();
+			}
+			else {
+				// rotate
+				KnowledgeBase.rotate(tmp);
+			}
+		}
 	}
 	
 	/**
@@ -115,83 +157,94 @@ public class Agent {
 		// valid target square
 		if ((Math.abs(current.row - target.row) == 1 && Math.abs(current.col - target.col) == 0) ||
 				(Math.abs(current.row - target.row) == 0 && Math.abs(current.col - target.col) == 1)) {
-			// get delta pos
-			int dr = target.row - current.row;
-			int dc = target.col - current.col;
-			
-			Direction target_dir;
-			if (dr<0) {
-				target_dir = Direction.north;
-			}
-			else if (dr>0) {
-				target_dir = Direction.south;
-			}
-			else if (dc<0) {
-				target_dir = Direction.west;
-			}
-			else {
-				target_dir = Direction.east;
-			}
-			
-			// Evaluates a move condition
-			if (KnowledgeBase.current_direction == target_dir) {
-				return Action.Move;
-			}
-			
-			// Evaluates rotation direction
-			switch (KnowledgeBase.current_direction) {
-			case north:
-				//y-- 
-				if (target_dir == Direction.west) {
-					return Action.RotateCCW;
-				}
-				else if (target_dir == Direction.east) {
-					return Action.RotateCW;
-				}
-				else {
-					return Action.RotateCW;
-				}
-				
-			case east:
-				//x++
-				if (target_dir == Direction.south) {
-					return Action.RotateCW;
-				}
-				else if (target_dir == Direction.north) {
-					return Action.RotateCCW;
-				}
-				else {
-					return Action.RotateCW;
-				}
-			case south:
-				//y++
-				if (target_dir == Direction.east) {
-					return Action.RotateCCW;
-				}
-				else if (target_dir == Direction.west) {
-					return Action.RotateCW;
-				}
-				else {
-					return Action.RotateCW;
-				}
-			case west:
-				//x--
-				if (target_dir == Direction.south) {
-					return Action.RotateCCW;
-				}
-				else if (target_dir == Direction.north) {
-					return Action.RotateCW;
-				}
-				else {
-					return Action.RotateCW;
-				}
-			default:
-				System.out.println("Agent has no direction");
-				throw new IllegalArgumentException();
-			}
+			return point_at_target_action(target);
 		}
 		// invalid target square
 		else {
+			throw new IllegalArgumentException();
+		}
+	}
+	
+	/**
+	 * Gets the action required to point at the target square
+	 * @param target square to point at, should be adjcent to the current square
+	 * @return Action, a rotation or Move
+	 * @throws IllegalArgumentException
+	 */
+	public Action point_at_target_action(Square target) throws IllegalArgumentException {
+		Square current = KnowledgeBase.getCurrentSquare();
+		// get delta pos
+		int dr = target.row - current.row;
+		int dc = target.col - current.col;
+		
+		Direction target_dir;
+		if (dr<0) {
+			target_dir = Direction.north;
+		}
+		else if (dr>0) {
+			target_dir = Direction.south;
+		}
+		else if (dc<0) {
+			target_dir = Direction.west;
+		}
+		else {
+			target_dir = Direction.east;
+		}
+		
+		// Evaluates a move condition
+		if (KnowledgeBase.current_direction == target_dir) {
+			return Action.Move;
+		}
+		
+		// Evaluates rotation direction
+		switch (KnowledgeBase.current_direction) {
+		case north:
+			//y-- 
+			if (target_dir == Direction.west) {
+				return Action.RotateCCW;
+			}
+			else if (target_dir == Direction.east) {
+				return Action.RotateCW;
+			}
+			else {
+				return Action.RotateCW;
+			}
+			
+		case east:
+			//x++
+			if (target_dir == Direction.south) {
+				return Action.RotateCW;
+			}
+			else if (target_dir == Direction.north) {
+				return Action.RotateCCW;
+			}
+			else {
+				return Action.RotateCW;
+			}
+		case south:
+			//y++
+			if (target_dir == Direction.east) {
+				return Action.RotateCCW;
+			}
+			else if (target_dir == Direction.west) {
+				return Action.RotateCW;
+			}
+			else {
+				return Action.RotateCW;
+			}
+		case west:
+			//x--
+			if (target_dir == Direction.south) {
+				return Action.RotateCCW;
+			}
+			else if (target_dir == Direction.north) {
+				return Action.RotateCW;
+			}
+			else {
+				return Action.RotateCW;
+			}
+		default:
+			System.out.println("Agent has no direction");
 			throw new IllegalArgumentException();
 		}
 	}

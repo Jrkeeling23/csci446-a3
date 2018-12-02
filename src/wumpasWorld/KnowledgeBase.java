@@ -59,6 +59,23 @@ public class KnowledgeBase{
 	}
 	
 	/**
+	 * Rotates the Agent in the given direction
+	 * @param Action, RotateCCW or RotateCW
+	 */
+	public static void rotate(Action act) {
+		Direction[] dir = Direction.values();
+		int i;
+		if (act == Action.RotateCCW) {
+			i = -1;
+		}
+		else {
+			i = 1;
+		}
+		int ord = (current_direction.ordinal() + i) % dir.length;
+		current_direction = dir[ord];
+	}
+	
+	/**
 	 * Tests if a square is dangerous
 	 * @param row
 	 * @param col
