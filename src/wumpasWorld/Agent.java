@@ -54,7 +54,7 @@ public class Agent {
 		// TODO finish this update
 		// update number of stinks found
 		if(current.environment_attributes[2] && !KnowledgeBase.wompus_found) {
-			KnowledgeBase.
+			kb.foundASmell();
 		}
 						
 	}

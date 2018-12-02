@@ -2,6 +2,8 @@ package wumpasWorld;
 
 import java.util.ArrayList;
 
+import FirstOrderLogic.Smells;
+
 public class KnowledgeBase{
 	
 	static boolean player_has_gold;
@@ -23,8 +25,11 @@ public class KnowledgeBase{
 			
 	static Square current_square;
 	
+	
 	// add squares that are have been visited or proven by FOL to kbs,(kbs = knowledge base square)
-	public ArrayList<ArrayList<Square>> kbs = new ArrayList<ArrayList<Square>>();
+	// set the array list to smallest known possible maze size
+	public ArrayList<ArrayList<Square>> kbs = initializeKbsSize();
+	
 	
 	public void init() {
 		player_has_gold = false;
@@ -36,7 +41,6 @@ public class KnowledgeBase{
 		have_arrow = true;
 		heard_scream = false;
 		points = 0;
-		//TODO: Update mazeSize whenever you net gain 1 in either x or y direction (and it is larger than the 
 		//current maze size. But only do so when wall_hit = false
 		mazeSize = 1;
 		
@@ -49,6 +53,7 @@ public class KnowledgeBase{
 	public void setCurrentSquare(Square currentSquare) {
 		current_square = currentSquare;
 		updateKbs(currentSquare);
+		
 	}
 	
 	public static Square getCurrentSquare() {
@@ -109,7 +114,7 @@ public class KnowledgeBase{
 			
 			//checks if they are on opposite ends: (equal on one axis or another)
 			if(smellySpaces.get(0)[0] == smellySpaces.get(1)[0]) {
-				//horizontal match, the wompus is in between
+				//horizontal match, the wompus is inbetween
 				wompus_found = true;
 				//for finding mid point
 				int y1 = smellySpaces.get(0)[1];
@@ -124,7 +129,7 @@ public class KnowledgeBase{
 				wompus_Pos[0] = smellySpaces.get(0)[0];
 				wompus_Pos[1] = y_val;
 			}else if(smellySpaces.get(0)[1] == smellySpaces.get(1)[1]) {
-				//vertical match, the wompus is in between
+				//vertical match, the wompus is inbetween
 				wompus_found = true;
 				
 				//for finding mid point
@@ -148,6 +153,7 @@ public class KnowledgeBase{
 				if(get_Kbs(smellySpaces.get(1)[0]-1, smellySpaces.get(1)[1]).visited) {
 					if(!get_Kbs(smellySpaces.get(1)[0], smellySpaces.get(1)[1]-1).visited) {
 						wompus_found = true;
+						System.out.println("You think there is a wumpus near by.");
 						wompus_Pos[0] = smellySpaces.get(1)[0];
 						wompus_Pos[1] = smellySpaces.get(1)[1]-1;
 					}
@@ -155,6 +161,7 @@ public class KnowledgeBase{
 				}else if(get_Kbs(smellySpaces.get(1)[0], smellySpaces.get(1)[1]-1).visited){
 					if(!get_Kbs(smellySpaces.get(1)[0]-1, smellySpaces.get(1)[1]).visited){
 						wompus_found = true;
+						System.out.println("You think there is a wumpus near by.");
 						wompus_Pos[0] = smellySpaces.get(1)[0]-1;
 						wompus_Pos[1] = smellySpaces.get(1)[1];
 					}
@@ -166,6 +173,7 @@ public class KnowledgeBase{
 				if(get_Kbs(smellySpaces.get(0)[0]-1, smellySpaces.get(0)[1]).visited) {
 					if(!get_Kbs(smellySpaces.get(0)[0], smellySpaces.get(0)[1]-1).visited) {
 						wompus_found = true;
+						System.out.println("You think there is a wumpus near by.");
 						wompus_Pos[0] = smellySpaces.get(0)[0];
 						wompus_Pos[1] = smellySpaces.get(0)[1]-1;
 					}
@@ -173,24 +181,71 @@ public class KnowledgeBase{
 				}else if(get_Kbs(smellySpaces.get(0)[0], smellySpaces.get(0)[1]-1).visited){
 					if(!get_Kbs(smellySpaces.get(0)[0]-1, smellySpaces.get(0)[1]).visited){
 						wompus_found = true;
+						System.out.println("You think there is a wumpus near by.");
 						wompus_Pos[0] = smellySpaces.get(0)[0]-1;
 						wompus_Pos[1] = smellySpaces.get(0)[1];
 					}
 				}else {
 					//We don't know which one the wompus is in yet, but could do more checks.
+					System.out.println("You think there is a wumpus near by, but you are unsure...");
 				}
 			}
 			
 		}
 		
+		//pin points wompus with 3 or more squares
 		if(smellySpaces.size() > 2) {
-			//TODO: pin point wompus with 3 smells
+			//goes through the coords of every possible combination of the 3 squares, 
+			//to see if there is a hortizontal or vertical match
+			boolean breakflag = false;
+			for(int smellX = 0; smellX < smellySpaces.size();smellX++) {
+				for(int smellY = 0; smellY < smellySpaces.size();smellY++) {
+					if(smellX != smellY) {
+						//horizontal match found
+						if(smellySpaces.get(smellX)[0] == smellySpaces.get(smellX)[0]) {
+							wompus_found = true;
+							//for finding mid point
+							int x1 = smellySpaces.get(smellX)[0];
+							int x2 = smellySpaces.get(smellY)[0];
+							int x_val;
+							if(x2>x1) {
+								x_val = x2-1;
+							}else {
+								x_val = x2+1;
+							}
+							wompus_Pos[0] = x_val;
+							wompus_Pos[1] = smellySpaces.get(smellX)[1];
+							breakflag = true;
+							break;
+						//vertical match found
+						}else if(smellySpaces.get(smellY)[0] == smellySpaces.get(smellY)[0]) {
+							wompus_found = true;
+							
+							//for finding mid point
+							int y1 = smellySpaces.get(smellX)[1];
+							int y2 = smellySpaces.get(smellY)[1];
+							int y_val;
+							if(y2>y1) {
+								y_val = y2-1;
+							}else {
+								y_val = y2+1;
+							}
+							wompus_Pos[0] = smellySpaces.get(smellX)[0];
+							wompus_Pos[1] = y_val;
+							breakflag = true;
+							break;
+						}
+					}
+				}
+				if(breakflag) {
+					break;
+				}
+			}
 		}
 	}
 	
 	/**
-	 * gets the square located at the coordinates in KBS if it exists, and throws an
-	 * ArrayIndexOutOfBoundsException if it does not
+	 * gets the square located at the coordinates in KBS if it exists
 	 * @param row
 	 * @param col
 	 * @return the square in KBS at row, col
@@ -211,27 +266,19 @@ public class KnowledgeBase{
 	}
 	
 	public void updateKbs(Square square) { // add squares one at a time to updateKbs
+		// col and row of square 
 		int col_coord = square.col;
 		int row_coord = square.row;
 		
 		try {
-			if (get_Kbs(row_coord, col_coord) != square && square != current_square){
-				// TODO: add the square to the knowledge base
-				
-				//Square toBeAddedSquare = new Square();
-				
-				// update frontier for each square. This prohibits using each element in kbs to update kbs
-				updateFrontier(square);
-			}
-			else if(get_Kbs(row_coord, col_coord) != square && square == current_square) {
-				//TODO: add the current square to the knowledge base
+			if (!get_Kbs(row_coord, col_coord).equals(square)){
 				kbs.get(row_coord).set(col_coord, square);
-				
 			}
 		}
 		catch(ArrayIndexOutOfBoundsException e) {
-			
+			changeArrayListSize(kbs);
 		}
+		
 			
 	}
 	
@@ -249,7 +296,7 @@ public class KnowledgeBase{
 			try {
 				Square tempS = get_Kbs(pos_X, pos_Y);
 				continue;
-			} catch (Exception e) {
+			} catch (ArrayIndexOutOfBoundsException e) {
 				//This should be reached if it meets the conditions for not being in the kbs
 				
 				//Checks for out of bounds issues
@@ -283,7 +330,7 @@ public class KnowledgeBase{
 			for (int[] pos : surrounding_positions) {
 				//Adds the actual square to surrounding squares
 				try {
-					//In a try catch in case we don't actually know about that square
+					//In a try catch incase we don't actually know about that square
 					Square temp_square = get_Kbs(pos[0],pos[1]);
 							if(temp_square.visited)
 								surrounding_squares.add(temp_square);
@@ -305,7 +352,7 @@ public class KnowledgeBase{
 				}
 			}
 			
-			// TODO Second Order Checks 
+			//Second Order Checks 
 			//Wumpus check(if we have 2 or more known smelly locations, infer the location of the wompus & ignore other wompus checks
 		}
 		//Checks all the modelset's on the frontier for if they have a length of 1, and if so, 
@@ -373,6 +420,14 @@ public class KnowledgeBase{
 				}
 			}
 		}
+	}
+	private ArrayList<ArrayList<Square>> initializeKbsSize() {
+		ArrayList<Square> row = new ArrayList<Square>(5);
+		ArrayList<ArrayList<Square>> kbs_to_be = new ArrayList<ArrayList<Square>>(5);
+		for(int i = 0; i< row.size(); i++) {
+			kbs_to_be.add(row);
+		}
+		return kbs_to_be;
 	}
 	
 }

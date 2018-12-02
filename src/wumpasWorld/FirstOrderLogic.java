@@ -135,15 +135,34 @@ public class FirstOrderLogic {
 		};
 		
 		forward = () -> {
-			if(MazeBuilder.checkValidForward()) {
-				//TODO: Use with move to check that it is valid, and to update mazeSize
-				
+			//evaluate x and y for next move based on direction
+			int temp_x = KnowledgeBase.current_square.col;
+			int temp_y = KnowledgeBase.current_square.row;
+			
+			switch (KnowledgeBase.current_direction) {
+				case north:
+					//y--
+					temp_y--;
+				case east:
+					//x++
+					temp_x++;
+				case south:
+					//y++
+					temp_y++;
+				case west:
+					//x--
+					temp_x--;
+				default:
+					System.out.println("Agent has no direction");
+			}
+			
+			if(MazeBuilder.checkValidForward(temp_x, temp_y)) {
 				//Updates the known maze size in KBS
-				if(KnowledgeBase.current_square.col+1 > KnowledgeBase.mazeSize) {
-					KnowledgeBase.mazeSize = KnowledgeBase.current_square.col+1;
+				if(temp_x+1 > KnowledgeBase.mazeSize) {
+					KnowledgeBase.mazeSize = temp_x;
 				}
-				if(KnowledgeBase.current_square.row+1 > KnowledgeBase.mazeSize) {
-					KnowledgeBase.mazeSize = KnowledgeBase.current_square.row+1;
+				if(temp_y+1 > KnowledgeBase.mazeSize) {
+					KnowledgeBase.mazeSize = temp_y;
 				}
 				return true;
 			}else {
