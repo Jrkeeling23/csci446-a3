@@ -33,7 +33,7 @@ public class FirstOrderLogic {
 	static GameFinished finished;
 	
 	//Initializes the lambda expressions
-	public void init() {
+	public static void init() {
 		breezy = (s) -> {
 			//Pass in a space and evaluate if it is breezy
 			if(s.has_obj(EnvType.breeze)) {

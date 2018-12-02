@@ -10,7 +10,7 @@ public class KnowledgeBase{
 	static boolean wompus_alive;
 	static boolean wompus_found;
 	static int[] wompus_Pos;
-	static int smellySpaces;
+	static ArrayList<int[]> smellySpaces;
 	static boolean have_arrow;
 	static boolean heard_scream;
 	static Direction current_direction;
@@ -32,7 +32,7 @@ public class KnowledgeBase{
 		wall_hit = false;
 		wompus_alive = true;
 		wompus_found = false;
-		smellySpaces = 0;
+		wompus_Pos = new int[2];
 		have_arrow = true;
 		heard_scream = false;
 		points = 0;
@@ -42,6 +42,8 @@ public class KnowledgeBase{
 		
 		//Initialzes agent's direction to 'south' (facing down from the top left)
 		current_direction = Direction.south;
+		
+		FirstOrderLogic.init();
 	}
 	
 	public void setCurrentSquare(Square currentSquare) {
@@ -70,6 +72,98 @@ public class KnowledgeBase{
 			// assume unknown squares are bad
 			return true;
 		}	
+	}
+	
+	//Tried to deduce where the wompus is early via 2nd order logic
+	public void foundASmell() {
+		//get current square pos x and y 
+		int x = current_square.col;
+		int y = current_square.row;
+		int[] position = {x,y};
+		
+		smellySpaces.add(position);
+		
+		if(smellySpaces.size() == 2) {
+			
+			//checks if they are on opposite ends: (equal on one axis or another)
+			if(smellySpaces.get(0)[0] == smellySpaces.get(1)[0]) {
+				//horizontal match, the wompus is inbetween
+				wompus_found = true;
+				//for finding mid point
+				int y1 = smellySpaces.get(0)[1];
+				int y2 = smellySpaces.get(1)[1];
+				int y_val;
+				if(y2>y1) {
+					y_val = y2-1;
+				}else {
+					y_val = y2+1;
+				}
+				
+				wompus_Pos[0] = smellySpaces.get(0)[0];
+				wompus_Pos[1] = y_val;
+			}else if(smellySpaces.get(0)[1] == smellySpaces.get(1)[1]) {
+				//vertical match, the wompus is inbetween
+				wompus_found = true;
+				
+				//for finding mid point
+				int x1 = smellySpaces.get(0)[1];
+				int x2 = smellySpaces.get(1)[1];
+				int x_val;
+				if(x2>x1) {
+					x_val = x2-1;
+				}else {
+					x_val = x2+1;
+				}
+				
+				wompus_Pos[0] = x_val;
+				wompus_Pos[1] = smellySpaces.get(0)[0];
+			}
+			
+			//checks if they are in corners: (plus one in each axis) from the smallest
+			if(smellySpaces.get(0)[0]<smellySpaces.get(1)[0]) {//checks if the first on in the arraylist is the smallest
+				//check left & down from the last in list if one or the other has been visited/is surrounded by any other visited square
+				
+				if(get_Kbs(smellySpaces.get(1)[0]-1, smellySpaces.get(1)[1]).visited) {
+					if(!get_Kbs(smellySpaces.get(1)[0], smellySpaces.get(1)[1]-1).visited) {
+						wompus_found = true;
+						wompus_Pos[0] = smellySpaces.get(1)[0];
+						wompus_Pos[1] = smellySpaces.get(1)[1]-1;
+					}
+						
+				}else if(get_Kbs(smellySpaces.get(1)[0], smellySpaces.get(1)[1]-1).visited){
+					if(!get_Kbs(smellySpaces.get(1)[0]-1, smellySpaces.get(1)[1]).visited){
+						wompus_found = true;
+						wompus_Pos[0] = smellySpaces.get(1)[0]-1;
+						wompus_Pos[1] = smellySpaces.get(1)[1];
+					}
+				}else {
+					//We don't know which one the wompus is in yet, but could do more checks.
+				}
+				
+			}else {
+				if(get_Kbs(smellySpaces.get(0)[0]-1, smellySpaces.get(0)[1]).visited) {
+					if(!get_Kbs(smellySpaces.get(0)[0], smellySpaces.get(0)[1]-1).visited) {
+						wompus_found = true;
+						wompus_Pos[0] = smellySpaces.get(0)[0];
+						wompus_Pos[1] = smellySpaces.get(0)[1]-1;
+					}
+						
+				}else if(get_Kbs(smellySpaces.get(0)[0], smellySpaces.get(0)[1]-1).visited){
+					if(!get_Kbs(smellySpaces.get(0)[0]-1, smellySpaces.get(0)[1]).visited){
+						wompus_found = true;
+						wompus_Pos[0] = smellySpaces.get(0)[0]-1;
+						wompus_Pos[1] = smellySpaces.get(0)[1];
+					}
+				}else {
+					//We don't know which one the wompus is in yet, but could do more checks.
+				}
+			}
+			
+		}
+		
+		if(smellySpaces.size() > 2) {
+			//TODO: pin point wompus with 3 smells
+		}
 	}
 	
 	/**

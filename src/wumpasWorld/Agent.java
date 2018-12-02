@@ -41,6 +41,9 @@ public class Agent {
 		current.environment_attributes = currentSquare.environment_attributes;
 		current.visited = true;
 		kb.setCurrentSquare(current);
+		if(current.environment_attributes[2]&&!KnowledgeBase.wompus_found) {
+			KnowledgeBase.
+		}
 						
 	}
 	
