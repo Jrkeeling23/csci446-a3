@@ -15,12 +15,12 @@ public class Agent {
 		// TODO finish initial set up of the agent
 	}
 	
-	public void agent_cycle(Square agent_square) {
+	public boolean agent_cycle(Square agent_square) {
 		// get precepts
 		boolean end_game = this.getPrecepts(agent_square);
 		
 		if (end_game) {
-			// TODO end game, update points
+			return false;
 		}
 		
 		// don't update frontier if we are following a path
@@ -38,6 +38,7 @@ public class Agent {
 		
 		// perform action
 		this.performAction(action);
+		return true;
 	}
 	
 	public boolean getPrecepts(Square currentSquare) {
