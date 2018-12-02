@@ -89,9 +89,7 @@ public class MazeBuilder {
 	}
 	
 	//Checks if the next movement forward the agent is trying to make is valid
-	public static boolean checkValidForward() {
-		int x = KnowledgeBase.getCurrentSquare().col;
-		int y = KnowledgeBase.getCurrentSquare().row;
+	public static boolean checkValidForward(int x, int y) {
 		
 		//checks if the agent is going out of bounds when moving in a specific direction
 		switch (KnowledgeBase.current_direction) {
