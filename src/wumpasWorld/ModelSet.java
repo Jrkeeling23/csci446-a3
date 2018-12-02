@@ -6,10 +6,14 @@ public class ModelSet {
 
 	private ArrayList<Square> models;
 	private static final int env_size = EnvType.values().length;
+	private int x_pos;
+	private int y_pos;
 	
 	public ModelSet(int x, int y) {
 		// list for all models for a square
 		ArrayList<Square> model_list = new ArrayList<Square>();
+		x_pos = x;
+		y_pos = y;
 		
 		// list of all env attributes to ignore
 		EnvType[] ignore = {EnvType.glitter, EnvType.breeze, EnvType.stench};
@@ -45,6 +49,14 @@ public class ModelSet {
 			}
 		}
 		models = model_list;
+	}
+	
+	public int getX() {
+		return x_pos;
+	}
+	
+	public int getY() {
+		return y_pos;
 	}
 	
 	/**

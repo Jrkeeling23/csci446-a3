@@ -17,20 +17,20 @@ import FirstOrderLogic.*;
 
 public class FirstOrderLogic {
 
-	Breezy breezy;
-	Smells smells;
-	Glimmers glitter;
-	Pit pit;
-	WompusIA wompus_is_alive;
-	Start start;
-	Wompus wompus;
-	Shoot shoot;
-	Grab grab;
-	Die die;
-	Climb climb;
-	Forward forward;
-	HitWall hitwall;
-	GameFinished finished;
+	static Breezy breezy;
+	static Smells smells;
+	static Glimmers glitter;
+	static Pit pit;
+	static WompusIA wompus_is_alive;
+	static Start start;
+	static Wompus wompus;
+	static Shoot shoot;
+	static Grab grab;
+	static Die die;
+	static Climb climb;
+	static Forward forward;
+	static HitWall hitwall;
+	static GameFinished finished;
 	
 	//Initializes the lambda expressions
 	public void init() {
@@ -168,4 +168,6 @@ public class FirstOrderLogic {
 	public boolean smell_Ignore() {
 		return !wompus_is_alive.wompas_is_alive();
 	}
+	
+	
 }

@@ -19,7 +19,7 @@ public class KnowledgeBase{
 	static int mazeSize;
 	
 	// adjacent squares of kbs are added to frontier
-	private ArrayList<ModelSet> frontier = new ArrayList<ModelSet>();
+	private static ArrayList<ModelSet> frontier = new ArrayList<ModelSet>();
 			
 	static Square current_square;
 	
@@ -120,8 +120,76 @@ public class KnowledgeBase{
 		}
 	}
 	
-	public static void trimFrontier() {
+	//Trims the frontier models and moves frontier models that have a length of 1 to the KBS
+	public void trimFrontier() {
+		//check over all the ModelSets on the frontier
+		for (ModelSet ms : frontier) {
+			//Trimming checks go here
+			
+			//Check all Known Squares around the frontier space for if they are breezy or smelly
+			ArrayList<int[]> surrounding_positions = getSurroundingPos(ms.getX(), ms.getY());
+			
+			//Initializes the list of squares surrounding the ModelSet's position so we can infer things
+			ArrayList<Square> surrounding_squares =  new ArrayList<>();
+			
+			for (int[] pos : surrounding_positions) {
+				//Adds the actual square to surrounding squares
+				try {
+					//In a try catch incase we don't actually know about that square
+					surrounding_squares.add(get_Kbs(pos[0],pos[1]));
+				} catch (Exception e) {
+					//Ignore
+				}
+			}
+			
+			//Check if any of the surrounding squares that we know about are not breezy/smelly
+			for (Square square : surrounding_squares) {
+				//checks if the square is breezy
+				if(!FirstOrderLogic.breezy.Breezy(square)) {
+					//remove the breezy element
+					ms.removeModel(EnvType.breeze);
+				}
+				if(!FirstOrderLogic.smells.Smells(square)) {
+					//remove the smells element
+					ms.removeModel(EnvType.stench);
+				}
+			}
+		}
+		//Checks all the modelset's on the frontier for if they have a length of 1, and if so, 
+		//puts them on the KB & removes from frontier
+		for (ModelSet ms : frontier) {
+			if(ms.getModels().size()<=1) {
+				
+				//put in KB
+				kbs.get(ms.getX()).set(ms.getY(),ms.getModels().get(0));
+				
+				//remove from frontier
+				frontier.remove(ms);
+			}
+		}
+	}
+	
+	//Returns surrounding positions as long as they are not out of bounds
+	public ArrayList<int[]> getSurroundingPos(int x, int y) {
 		
+		int[] surrounding_x = {0,0,1,-1};
+		int[] surrounding_y = {1,-1,0,0};
+		
+		ArrayList<int[]> surrounding = new ArrayList<>();
+		int[] pos = new int[2];
+		
+		for(int i = 0; i < 4; i++) {
+			//checks if the new position is even valid before adding it to the returning list
+			if(((x+surrounding_x[i]>0)&&(MazeBuilder.outOfBoundsCheck(x+surrounding_x[i]))) 
+					&& ((y+surrounding_y[i]>0)&&(MazeBuilder.outOfBoundsCheck(y+surrounding_y[i])))) {
+				pos[0] = x+surrounding_x[i];
+				pos[1] = y+surrounding_y[i];
+				
+				surrounding.add(pos);
+			}
+		}
+		
+		return surrounding;
 	}
 	
 	private void changeArrayListSize(ArrayList<ArrayList <Square>>  list) {
