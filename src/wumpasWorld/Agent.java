@@ -118,41 +118,44 @@ public class Agent {
 	 */
 	public void performAction(Action act) {
 		if (act == Action.Follow) {
-			Square tmp = follow_path.get(0);
-			//tmp.printEnv();
-			Action movement = move_to(tmp);
-			// move or rotate
-			if (movement == Action.Move) {
-				if (FirstOrderLogic.forward.check_forward()) {
-					// move the agent
-					// set next square as current
-					kb.current_square = tmp;
-					// remove square from follow list
-					follow_path.remove(0);
-					// update points
-					kb.setPoints(kb.getPoints()-1);
+				if(follow_path.size()>0) {
+				System.out.println("Follow Path:"+follow_path);
+				Square tmp = follow_path.get(0);
+				//tmp.printEnv();
+				Action movement = move_to(tmp);
+				// move or rotate
+				if (movement == Action.Move) {
+					if (FirstOrderLogic.forward.check_forward()) {
+						// move the agent
+						// set next square as current
+						kb.current_square = tmp;
+						// remove square from follow list
+						follow_path.remove(0);
+						// update points
+						kb.setPoints(kb.getPoints()-1);
+					}
+					else {
+						// TODO move not possible
+						follow_path.clear();
+						kb.points -= 1;
+					}
+				}
+				else if (movement == Action.RotateCW) {
+					// rotate
+					kb.rotate(movement);
+				}
+			}
+			else if (act == Action.Shoot) {
+				// get how to point at the wumpus
+				Action tmp = point_at_target_action(kb.get_Kbs(kb.wompus_Pos[0], kb.wompus_Pos[1]));
+				if (tmp == Action.Move) {
+					// shoot
+					FirstOrderLogic.shoot.shoot();
 				}
 				else {
-					// TODO move not possible
-					follow_path.clear();
-					kb.points -= 1;
+					// rotate
+					kb.rotate(tmp);
 				}
-			}
-			else if (movement == Action.RotateCW) {
-				// rotate
-				kb.rotate(movement);
-			}
-		}
-		else if (act == Action.Shoot) {
-			// get how to point at the wumpus
-			Action tmp = point_at_target_action(kb.get_Kbs(kb.wompus_Pos[0], kb.wompus_Pos[1]));
-			if (tmp == Action.Move) {
-				// shoot
-				FirstOrderLogic.shoot.shoot();
-			}
-			else {
-				// rotate
-				kb.rotate(tmp);
 			}
 		}
 	}

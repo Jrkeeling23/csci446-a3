@@ -268,9 +268,14 @@ public class KnowledgeBase{
 	 */
 	public Square get_Kbs(int row, int col) throws IndexOutOfBoundsException {
 		// check if KBS is actually big enough
-		if (row >= kbs.size() || col >= kbs.get(row).size()) {
-			changeArrayListSize(kbs);
+		try {
+			if (row >= kbs.size() || col >= kbs.get(row).size()) {
+				changeArrayListSize(kbs);
+			}
+		} catch (ArrayIndexOutOfBoundsException e) {
+			System.out.println("kbs.get() returned a fake square");
 		}
+		
 		// get the element
 		Square element = kbs.get(row).get(col);
 		if (element.fake) {
