@@ -17,7 +17,7 @@ public class World {
 			running = true;
 			//While not dead or finished, continue running the agent cycle
 			while(running) {
-				running = agent.agent_cycle(maze[KnowledgeBase.getCurrentSquare().col][KnowledgeBase.getCurrentSquare().row]);
+				running = agent.agent_cycle(maze[agent.getKB().getCurrentSquare().col][agent.getKB().getCurrentSquare().row]);
 			}
 			points = agent.getKB().points;
 		}

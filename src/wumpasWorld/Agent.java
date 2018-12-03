@@ -11,7 +11,7 @@ public class Agent {
 	
 	public Agent(Square start) {
 		kb = new KnowledgeBase();
-		KnowledgeBase.current_square = start;
+		kb.current_square = start;
 		follow_path = new ArrayList<>();
 		// TODO finish initial set up of the agent
 	}
@@ -28,7 +28,7 @@ public class Agent {
 		// paths can only be on visited squares
 		if (follow_path.size() <= 1) {
 			// update frontier
-			kb.updateFrontier(KnowledgeBase.getCurrentSquare());
+			kb.updateFrontier(kb.getCurrentSquare());
 			
 			// trim frontier
 			kb.trimFrontier();
@@ -73,7 +73,7 @@ public class Agent {
 	public Action actionQuery() {
 		if (kb.getWompusFound() && kb.getWompusAlive() &&
 				!kb.get_Kbs(kb.wompus_Pos[0], kb.getWompusPos()[1]).has_obj(EnvType.pit) &&
-				KnowledgeBase.current_square.has_obj(EnvType.stench)) {
+				kb.current_square.has_obj(EnvType.stench)) {
 			return Action.Shoot;
 		}
 		else if (follow_path.size() > 0) {
@@ -118,7 +118,7 @@ public class Agent {
 				if (FirstOrderLogic.forward.check_forward()) {
 					// move the agent
 					// set next square as current
-					KnowledgeBase.current_square = tmp;
+					kb.current_square = tmp;
 					// remove square from follow list
 					follow_path.remove(0);
 					// update points
@@ -155,7 +155,7 @@ public class Agent {
 	 * @return Action, a rotation or Move
 	 */
 	private Action move_to(Square target) throws IllegalArgumentException {
-		Square current = KnowledgeBase.getCurrentSquare();
+		Square current = kb.getCurrentSquare();
 		// valid target square
 		if ((Math.abs(current.row - target.row) == 1 && Math.abs(current.col - target.col) == 0) ||
 				(Math.abs(current.row - target.row) == 0 && Math.abs(current.col - target.col) == 1)) {
@@ -174,7 +174,7 @@ public class Agent {
 	 * @throws IllegalArgumentException
 	 */
 	public Action point_at_target_action(Square target) throws IllegalArgumentException {
-		Square current = KnowledgeBase.getCurrentSquare();
+		Square current = kb.getCurrentSquare();
 		// get delta pos
 		int dr = target.row - current.row;
 		int dc = target.col - current.col;
@@ -261,7 +261,7 @@ public class Agent {
 	public ArrayList<Square> get_optimal_path(int target_row, int target_col) {
 		try {
 			// get current square
-			Square current = KnowledgeBase.getCurrentSquare();
+			Square current = kb.getCurrentSquare();
 			Square target = kb.get_Kbs(target_row, target_col);
 			// find optimal path to target
 			ArrayList<Square> path = search_BFS(current, target, null, 0);
@@ -271,14 +271,14 @@ public class Agent {
 			// return resulting path
 			return path;
 		} 
-		catch(ArrayIndexOutOfBoundsException e) {
+		catch(IndexOutOfBoundsException e) {
 			return new ArrayList<Square>();
 		}
 	}
 	
 	public boolean closest_unvisited() {
 		// get current square
-		Square current = KnowledgeBase.getCurrentSquare();
+		Square current = kb.getCurrentSquare();
 		// get the closest Square that has not been visited
 		ArrayList<Square> path = search_BFS(current, null, null, 1);
 		// path not found
@@ -293,7 +293,7 @@ public class Agent {
 	
 	public ArrayList<Square> closest_EnvType(EnvType env){
 		// get current square
-		Square current = KnowledgeBase.getCurrentSquare();
+		Square current = kb.getCurrentSquare();
 		// find optimal path to closest stench
 		ArrayList<Square> path = search_BFS(current, null, env, 2);
 		if (path == null) {
@@ -321,21 +321,34 @@ public class Agent {
 			// expand current
 			current = queue.pop();
 			
-			if (search_end_switch==0 && current.data.equals(end)) {
-				// start building solution
-				solution = true;
-				break;
+			// check end type switch
+			if (search_end_switch==0) {
+				// check end condition
+				if (current.data.equals(end)) {
+					// start building solution
+					solution = true;
+					break;
+				}
 			}
-			else if (search_end_switch==1 && !current.data.visited) {
-				// start building solution
-				solution = true;
-				break;
+			// check end type switch
+			else if (search_end_switch==1) {
+				// check end condition
+				if (!current.data.visited) {
+					// start building solution
+					solution = true;
+					break;
+				}
 			}
-			else if (!current.data.has_obj(env)) {
-				// start building solution
-				solution = true;
-				break;
+			// check end type switch
+			else if (search_end_switch==2) {
+				// check end condition
+				if (!current.data.has_obj(env)) {
+					// start building solution
+					solution = true;
+					break;
+				}
 			}
+			
 			
 			// add current children to queue
 			for (int[] d : adj) {
@@ -352,7 +365,7 @@ public class Agent {
 						in_queue[tmp.row][tmp.col] = true;
 					}
 				}
-				catch(ArrayIndexOutOfBoundsException e) {
+				catch(IndexOutOfBoundsException e) {
 					// skip
 				}
 			}

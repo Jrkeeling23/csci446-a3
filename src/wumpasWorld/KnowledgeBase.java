@@ -11,17 +11,17 @@ public class KnowledgeBase{
 	boolean wompus_found;
 	int[] wompus_Pos;
 	ArrayList<int[]> smellySpaces;
-	 boolean have_arrow;
+	boolean have_arrow;
 	boolean heard_scream;
 	Direction current_direction;
 	int points;
 	
-	static int mazeSize;
+	int mazeSize;
 	
 	// adjacent squares of kbs are added to frontier
-	private static ArrayList<ModelSet> frontier = new ArrayList<ModelSet>();
+	private ArrayList<ModelSet> frontier = new ArrayList<ModelSet>();
 			
-	static Square current_square;
+	Square current_square;
 	
 	
 	// add squares that are have been visited or proven by FOL to kbs,(kbs = knowledge base square)
@@ -29,7 +29,7 @@ public class KnowledgeBase{
 	public ArrayList<ArrayList<Square>> kbs;
 	
 	
-	public void init() {
+	public KnowledgeBase() {
 		player_has_gold = false;
 		player_returning_to_start = false;
 		wall_hit = false;
@@ -55,7 +55,7 @@ public class KnowledgeBase{
 		
 	}
 	
-	public static Square getCurrentSquare() {
+	public Square getCurrentSquare() {
 		return current_square;
 	}
 	
@@ -88,7 +88,7 @@ public class KnowledgeBase{
 			// false if square is good
 			return !(!tmp.has_obj(EnvType.pit) && (!tmp.has_obj(EnvType.wumpus) || !wompus_alive));
 		}
-		catch(ArrayIndexOutOfBoundsException e) {
+		catch(IndexOutOfBoundsException e) {
 			// assume unknown squares are bad
 			return true;
 		}	
@@ -266,7 +266,7 @@ public class KnowledgeBase{
 	 * @param col
 	 * @return the square in KBS at row, col
 	 */
-	public Square get_Kbs(int row, int col) throws ArrayIndexOutOfBoundsException {
+	public Square get_Kbs(int row, int col) throws IndexOutOfBoundsException {
 		// check KBS is big enough
 		if (row >= kbs.size() || col >= kbs.get(row).size()) {
 			changeArrayListSize(kbs);
@@ -274,7 +274,7 @@ public class KnowledgeBase{
 		// get the element
 		Square element = kbs.get(row).get(col);
 		if (element.fake) {
-			throw new ArrayIndexOutOfBoundsException();
+			throw new IndexOutOfBoundsException();
 		}
 		else {
 			return element;
@@ -291,7 +291,7 @@ public class KnowledgeBase{
 				kbs.get(row_coord).set(col_coord, square);
 			}
 		}
-		catch(ArrayIndexOutOfBoundsException e) {
+		catch(IndexOutOfBoundsException e) {
 			changeArrayListSize(kbs);
 		}
 		
@@ -312,7 +312,7 @@ public class KnowledgeBase{
 			try {
 				Square tempS = get_Kbs(pos_X, pos_Y);
 				continue;
-			} catch (ArrayIndexOutOfBoundsException e) {
+			} catch (IndexOutOfBoundsException e) {
 				//This should be reached if it meets the conditions for not being in the kbs
 				
 				//Checks for out of bounds issues
@@ -352,7 +352,7 @@ public class KnowledgeBase{
 							if(temp_square.visited)
 								surrounding_squares.add(temp_square);
 					}
-				} catch (ArrayIndexOutOfBoundsException e) {
+				} catch (IndexOutOfBoundsException e) {
 					//Ignore
 				}
 			}
@@ -386,7 +386,7 @@ public class KnowledgeBase{
 								Square temp_square = get_Kbs(pos[0],pos[1]);
 									checkIfKnown.add(temp_square);
 							}
-						} catch (ArrayIndexOutOfBoundsException e) {
+						} catch (IndexOutOfBoundsException e) {
 							//We don't know enough about this square, iterate unknown by 1
 							unknown++;
 						}
@@ -420,7 +420,7 @@ public class KnowledgeBase{
 								Square temp_square = get_Kbs(pos[0],pos[1]);
 									checkIfKnown.add(temp_square);
 							}
-						} catch (ArrayIndexOutOfBoundsException e) {
+						} catch (IndexOutOfBoundsException e) {
 							//We don't know enough about this square, iterate unknown by 1
 							unknown++;
 						}
@@ -477,8 +477,9 @@ public class KnowledgeBase{
 	
 	private void changeArrayListSize(ArrayList<ArrayList <Square>>  list) {
 		int length = list.size()*2;
+		
 		ArrayList<Square> row;
-		ArrayList<ArrayList <Square>> newList = new ArrayList<ArrayList<Square>>(length);
+		ArrayList<ArrayList <Square>> newList = new ArrayList<ArrayList<Square>>();
 		
 		for(int i = 0; i <length; i ++) {
 			row = new ArrayList<Square>(length);
@@ -509,7 +510,7 @@ public class KnowledgeBase{
 		ArrayList<ArrayList<Square>> kbs_to_be = new ArrayList<ArrayList<Square>>();
 		for(int i = 0; i< 5; i++) {
 			row = new ArrayList<Square>();
-			for(int j = 0; j <row.size(); j++) {
+			for(int j = 0; j < 5; j++) {
 				Square temp = new Square(i,j);
 				temp.fake = true;
 				row.add(temp);
