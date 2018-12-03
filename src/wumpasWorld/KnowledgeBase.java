@@ -267,7 +267,6 @@ public class KnowledgeBase{
 	 * @return the square in KBS at row, col
 	 */
 	public Square get_Kbs(int row, int col) throws IndexOutOfBoundsException {
-<<<<<<< Updated upstream
 		// check if KBS is actually big enough
 		try {
 			if (row >= kbs.size() || col >= kbs.get(row).size()) {
@@ -277,12 +276,10 @@ public class KnowledgeBase{
 			System.out.println("kbs.get() returned a fake square: "+row+", "+col);
 		}
 		
-=======
 		// check KBS is big enough
 		if (row >= kbs.size() || col >= kbs.get(row).size()) {
 			changeArrayListSize(kbs);
 		}
->>>>>>> Stashed changes
 		// get the element
 		Square element = kbs.get(row).get(col);
 		if (element.fake) {
@@ -292,13 +289,10 @@ public class KnowledgeBase{
 		else {
 			return element;
 		}
-<<<<<<< Updated upstream
 	}
 	
 	public int get_frontier_size() {
 		return this.frontier.size();
-=======
->>>>>>> Stashed changes
 	}
 	
 	public void updateKbs(Square square) { // add squares one at a time to updateKbs
