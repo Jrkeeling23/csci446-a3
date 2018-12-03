@@ -367,13 +367,16 @@ public class Agent {
 					// get KBS element at [row + d[0]][col + d[1]]
 					Square tmp = kb.get_Kbs(current.data.row + d[0], current.data.col + d[1]);
 					// don't add an element that is already in the queue, and don't add a dangerous square
-					if (!in_queue[tmp.row][tmp.col] && !kb.is_dangerous_square(tmp.row, tmp.col)){
-						// add element to tree
-						Node<Square> tmp_node = current.add_child(tmp);
-						// add element to queue
-						queue.add(tmp_node);
-						// don't add this element again
-						in_queue[tmp.row][tmp.col] = true;
+					//TODO: check if temp.tow/col are less than 0
+					if(tmp.row>-1&&tmp.col>-1) {
+						if (!in_queue[tmp.row][tmp.col] && !kb.is_dangerous_square(tmp.row, tmp.col)){
+							// add element to tree
+							Node<Square> tmp_node = current.add_child(tmp);
+							// add element to queue
+							queue.add(tmp_node);
+							// don't add this element again
+							in_queue[tmp.row][tmp.col] = true;
+						}
 					}
 				}
 				catch(IndexOutOfBoundsException e) {

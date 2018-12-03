@@ -272,10 +272,10 @@ public class KnowledgeBase{
 			if (row >= kbs.size() || col >= kbs.get(row).size()) {
 				changeArrayListSize(kbs);
 			}
-		} catch (ArrayIndexOutOfBoundsException e) {
-			System.out.println("kbs.get() returned a fake square");
+		} catch (IndexOutOfBoundsException e) {
+			System.out.println("kbs.get() returned a fake square: "+row+", "+col);
 		}
-		
+		//TODO: it is returning squares w/ negative coords which shouldn't be, what do?
 		// get the element
 		Square element = kbs.get(row).get(col);
 		if (element.fake) {
@@ -295,7 +295,7 @@ public class KnowledgeBase{
 		// col and row of square 
 		int col_coord = square.col;
 		int row_coord = square.row;
-		
+		System.out.println("Upating square:"+col_coord+", "+row_coord);
 		try {
 			if (!get_Kbs(row_coord, col_coord).content_equals(square)){
 				// in KBS but not equal
@@ -305,6 +305,7 @@ public class KnowledgeBase{
 		// get_Kbs handles changeArrayListSize, so here we want to just add a square
 		catch(IndexOutOfBoundsException e) {
 			// not in the KBS
+			//TODO: don't run if actually out of bounds (negative)
 			kbs.get(row_coord).set(col_coord, square);
 		}
 	}
