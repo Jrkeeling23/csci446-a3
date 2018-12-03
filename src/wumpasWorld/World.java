@@ -19,6 +19,9 @@ public class World {
 		// make the agent
 		agent = new Agent(maze[0][0]);
 		running = true;
+		
+		//Prints world TODO: TEMP
+		printMaze(maze);
 		//While not dead or finished, continue running the agent cycle
 		while(running) {
 			running = agent.agent_cycle(maze[agent.getKB().getCurrentSquare().col][agent.getKB().getCurrentSquare().row]);
@@ -39,4 +42,18 @@ public class World {
 				System.out.println();
 			}
 		}
+	private void printMaze(Square[][] maze) {
+		for (int row=0; row<4; row++) {
+			for (int col=0; col<4; col++) {
+				String tmp = "";
+				for (int i=0; i<env_size; i++) {
+					tmp += maze[row][col].environment_attributes[i] ? "1" : "0";
+				}
+				System.out.print(tmp + ", ");
+				}
+				System.out.println();
+			}
+		
+		
+	}
 }
