@@ -12,6 +12,10 @@ public class World {
 			// build a maze
 			MazeBuilder maze_obj = new MazeBuilder(maze_size);
 			Square[][] maze = maze_obj.get_maze();
+			
+			// TODO get rid of this printout
+			testing_maze_printout(maze);
+			
 			// make the agent
 			agent = new Agent(maze[0][0]);
 			running = true;
@@ -23,6 +27,7 @@ public class World {
 		}
 		
 		private static void testing_maze_printout(Square[][] maze) {
+			System.out.println("glitter, breeze, stench, wumpus, pit");
 			for (int row=0; row<4; row++) {
 				for (int col=0; col<4; col++) {
 					String tmp = "";

@@ -147,15 +147,19 @@ public class FirstOrderLogic {
 				case north:
 					//y--
 					temp_y--;
+					break;
 				case east:
 					//x++
 					temp_x++;
+					break;
 				case south:
 					//y++
 					temp_y++;
+					break;
 				case west:
 					//x--
 					temp_x--;
+					break;
 				default:
 					System.out.println("Agent has no direction");
 			}

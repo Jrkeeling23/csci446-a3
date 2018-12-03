@@ -185,6 +185,7 @@ public class KnowledgeBase{
 				}
 				
 			}else {
+				// TODO needs to handle a IndexOutOfBoundsException
 				if(get_Kbs(smellySpaces.get(0)[0]-1, smellySpaces.get(0)[1]).visited) {
 					if(!get_Kbs(smellySpaces.get(0)[0], smellySpaces.get(0)[1]-1).visited) {
 						wompus_found = true;
@@ -211,7 +212,7 @@ public class KnowledgeBase{
 		//pin points wompus with 3 or more squares
 		if(smellySpaces.size() > 2) {
 			//goes through the coords of every possible combination of the 3 squares, 
-			//to see if there is a hortizontal or vertical match
+			//to see if there is a horizontal or vertical match
 			boolean breakflag = false;
 			for(int smellX = 0; smellX < smellySpaces.size();smellX++) {
 				for(int smellY = 0; smellY < smellySpaces.size();smellY++) {
@@ -317,13 +318,26 @@ public class KnowledgeBase{
 				//This should be reached if it meets the conditions for not being in the kbs
 				
 				//Checks for out of bounds issues
-				if(is_out_of_bounds(pos_X) && is_out_of_bounds(pos_Y)) {
-					for (ModelSet ms : frontier) {
-						//checks if the adjacent node is already in the frontier
-						if((ms.getX() == pos_X)&&(ms.getY() == pos_Y)) {
-							break;
-						}else {
-							//Adds the adjacent square to the frontier
+				if(!(is_out_of_bounds(pos_X) || is_out_of_bounds(pos_Y))) {
+			        // add to frontier if it is not already there
+					if (frontier.size() == 0) {
+						//Adds the adjacent square to the frontier
+						frontier.add(new ModelSet(pos_X, pos_Y));
+					}
+					else {
+						// can't modify frontier while in loop (Concurrent Modification Exception)
+						ArrayList<ModelSet> tmp = new ArrayList<>();
+						boolean on_frontier = false;
+						for (ModelSet ms : frontier) {
+							//checks if the adjacent node is already in the frontier
+							if((ms.getX() == pos_X)&&(ms.getY() == pos_Y)) {
+								on_frontier = true;
+								break;
+							}
+						}
+						//Adds the adjacent square to the frontier
+						if (!on_frontier) {
+							// add new squares to frontier
 							frontier.add(new ModelSet(pos_X, pos_Y));
 						}
 					}
@@ -364,13 +378,12 @@ public class KnowledgeBase{
 				if(!FirstOrderLogic.breezy.Breezy(square)) {
 					//remove the possibility of it being a pit
 					ms.removeModel(EnvType.pit);
-					
-					
 				}
 				if(!FirstOrderLogic.smells.Smells(square)||wompus_found) {
 					//remove the possibility of this square being a wumpus
 					ms.removeModel(EnvType.wumpus);
 				}
+			
 				//attempts 2nd order logic to deduce the wompus's location if it hasn't been found already
 				if(!wompus_found && FirstOrderLogic.smells.Smells(square)) {
 					//Needs to check now to see if we know about all the surrounding squares (in maze bounds)
@@ -439,13 +452,19 @@ public class KnowledgeBase{
 				
 			}
 		}
+		move_single_models();
+	}
+	
+	private void move_single_models() {
+		// can't modify frontier while in loop (Concurrent Modification Exception)
+		ArrayList<ModelSet> tmp = new ArrayList<>(frontier);
+		
 		//Checks all the modelset's on the frontier for if they have a length of 1, and if so, 
 		//puts them on the KB & removes from frontier
-		for (ModelSet ms : frontier) {
+		for (ModelSet ms : tmp) {
 			if(ms.getModels().size()<=1) {
-				
 				//put in KB
-				kbs.get(ms.getX()).set(ms.getY(),ms.getModels().get(0));
+				kbs.get(ms.getX()).set(ms.getY(), ms.getModels().get(0));
 				
 				//remove from frontier
 				frontier.remove(ms);

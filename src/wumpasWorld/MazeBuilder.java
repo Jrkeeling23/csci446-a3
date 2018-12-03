@@ -52,6 +52,62 @@ public class MazeBuilder {
 		return maze;
 	}
 	
+	/**
+	 * replaces maze with a test maze for being boxed in at the start with stinks
+	 */
+	public void test_maze_01(){
+		int[] w = {1, 1};
+		int[] g = {1, 1};
+		int[][] p = {};
+		make_test_maze(w, g, p);
+	}
+	
+	/**
+	 * replaces maze with a test maze for being boxed in at the start with breezes
+	 */
+	public void test_maze_02(){
+		int[] w = {3, 3};
+		int[] g = {1, 1};
+		int[][] p = {{1, 1}};
+		make_test_maze(w, g, p);
+	}
+	
+	/**
+	 * replaces maze with a test maze for open maze
+	 */
+	public void test_maze_03(){
+		int[] w = {3, 3};
+		int[] g = {1, 2};
+		int[][] p = {{2, 3}};
+		make_test_maze(w, g, p);
+	}
+	
+	private void make_test_maze(int[] w_pos, int[] gold_pos, int[][] pits_pos) {
+		maze = new Square[4][4];
+		// Initialize all squares
+		for (int row=0; row<4; row++) {
+			for (int col=0; col<4; col++) {
+				// set the row and col of each Square
+				maze[row][col] = new Square(row, col);
+			}
+		}
+		// place wumpus
+		maze[w_pos[0]][w_pos[1]].add_obj(EnvType.wumpus);
+		// place all 4 stenches
+		add_object_to_adjs(w_pos[0], w_pos[1], EnvType.stench);
+		wumpus = new int[2];
+		wumpus[0] = w_pos[0];
+		wumpus[1] = w_pos[1];
+		// place the pits
+		for (int[] pos : pits_pos) {
+			maze[pos[0]][pos[1]].add_obj(EnvType.pit);
+			// place all 4 breezes
+			add_object_to_adjs(pos[0], pos[1], EnvType.breeze);
+		}
+		// place gold
+		maze[gold_pos[0]][gold_pos[1]].add_obj(EnvType.glitter);
+	}
+	
 	//Uses the agent's position & direction to verify if the shot being taken hits or not without knowledge of
 	//the wumpus's actual position being reveiled to the agent.
 	public static boolean verifyWumpusHit() {

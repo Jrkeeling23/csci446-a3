@@ -1,6 +1,6 @@
 package wumpasWorld;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class Node<T> {
 	// Node data
@@ -8,10 +8,11 @@ public class Node<T> {
     // parent of the Node
     private Node<T> parent;
     // list of Node children
-    private List<Node<T>> children;
+    private ArrayList<Node<T>> children;
     
     public Node(T data) {
     	this.data = data;
+    	children = new ArrayList<>();
     }
     
     /**
