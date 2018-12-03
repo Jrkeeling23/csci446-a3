@@ -78,37 +78,41 @@ public class Agent {
 	 * @return Action
 	 */
 	public Action actionQuery() {
-		if (kb.getWompusFound() && kb.getWompusAlive() &&
-				!kb.get_Kbs(kb.wompus_Pos[0], kb.getWompusPos()[1]).has_obj(EnvType.pit) &&
-				kb.current_square.has_obj(EnvType.stench)) {
-			return Action.Shoot;
-		}
-		else if (follow_path.size() > 0) {
-			return Action.Follow;
-		}
-		else if (kb.has_gold()) {
-			this.follow_path = this.get_optimal_path(0, 0);
-			return Action.Follow;
-		}
-		// if there are unvisited empty squares in the KBS, go to the closest one
-		else if (this.closest_unvisited()) {
-			return Action.Follow;
-		}
-		// Wumpus is still alive and not on a pit -> navigate to adj square
-		else if (kb.getWompusFound() && kb.getWompusAlive() &&
-				!kb.get_Kbs(kb.getWompusPos()[0], kb.getWompusPos()[1]).has_obj(EnvType.pit)) {
-			// Requires moving to the correct square first
-			this.follow_path = this.closest_EnvType(EnvType.stench);
-			return Action.Follow;
-		}
-		else {
-			// go to the closest frontier square
-			int[] pos = kb.closest_frontier_square();
-			
-			// find path to closest frontier square
-			this.follow_path = this.get_optimal_path(pos[0], pos[1]);
-			// update follow_path
-			return Action.Follow;
+		try {
+			if (kb.getWompusFound() && kb.getWompusAlive() &&
+					!kb.get_Kbs(kb.wompus_Pos[0], kb.getWompusPos()[1]).has_obj(EnvType.pit) &&
+					kb.current_square.has_obj(EnvType.stench)) {
+				return Action.Shoot;
+			}
+			else if (follow_path.size() > 0) {
+				return Action.Follow;
+			}
+			else if (kb.has_gold()) {
+				this.follow_path = this.get_optimal_path(0, 0);
+				return Action.Follow;
+			}
+			// if there are unvisited empty squares in the KBS, go to the closest one
+			else if (this.closest_unvisited()) {
+				return Action.Follow;
+			}
+			// Wumpus is still alive and not on a pit -> navigate to adj square
+			else if (kb.getWompusFound() && kb.getWompusAlive() &&
+					!kb.get_Kbs(kb.getWompusPos()[0], kb.getWompusPos()[1]).has_obj(EnvType.pit)) {
+				// Requires moving to the correct square first
+				this.follow_path = this.closest_EnvType(EnvType.stench);
+				return Action.Follow;
+			}
+			else {
+				// go to the closest frontier square
+				int[] pos = kb.closest_frontier_square();
+				
+				// find path to closest frontier square
+				this.follow_path = this.get_optimal_path(pos[0], pos[1]);
+				// update follow_path
+				return Action.Follow;
+			}
+		} catch (IndexOutOfBoundsException e) {
+			return null;
 		}
 	}
 	

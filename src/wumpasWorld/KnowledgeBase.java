@@ -51,7 +51,10 @@ public class KnowledgeBase{
 	
 	public void setCurrentSquare(Square currentSquare) {
 		current_square = currentSquare;
+		printMaze();
 		updateKbs(currentSquare);
+		printMaze();
+		//TODO: needs to update frontier
 	}
 	
 	public Square getCurrentSquare() {
@@ -164,47 +167,54 @@ public class KnowledgeBase{
 			//checks if they are in corners: (plus one in each axis) from the smallest
 			if(smellySpaces.get(0)[0]<smellySpaces.get(1)[0]) {//checks if the first on in the arraylist is the smallest
 				//check left & down from the last in list if one or the other has been visited/is surrounded by any other visited square
-				
-				if(get_Kbs(smellySpaces.get(1)[0]-1, smellySpaces.get(1)[1]).visited) {
-					if(!get_Kbs(smellySpaces.get(1)[0], smellySpaces.get(1)[1]-1).visited) {
-						wompus_found = true;
-						System.out.println("You think there is a wumpus near by.");
-						wompus_Pos[0] = smellySpaces.get(1)[0];
-						wompus_Pos[1] = smellySpaces.get(1)[1]-1;
+				try {
+					if(get_Kbs(smellySpaces.get(1)[0]-1, smellySpaces.get(1)[1]).visited) {
+						if(!get_Kbs(smellySpaces.get(1)[0], smellySpaces.get(1)[1]-1).visited) {
+							wompus_found = true;
+							System.out.println("You think there is a wumpus near by.");
+							wompus_Pos[0] = smellySpaces.get(1)[0];
+							wompus_Pos[1] = smellySpaces.get(1)[1]-1;
+						}
+							
+					}else if(get_Kbs(smellySpaces.get(1)[0], smellySpaces.get(1)[1]-1).visited){
+						if(!get_Kbs(smellySpaces.get(1)[0]-1, smellySpaces.get(1)[1]).visited){
+							wompus_found = true;
+							System.out.println("You think there is a wumpus near by.");
+							wompus_Pos[0] = smellySpaces.get(1)[0]-1;
+							wompus_Pos[1] = smellySpaces.get(1)[1];
+						}
+					}else {
+						//We don't know which one the wompus is in yet, but could do more checks.
 					}
-						
-				}else if(get_Kbs(smellySpaces.get(1)[0], smellySpaces.get(1)[1]-1).visited){
-					if(!get_Kbs(smellySpaces.get(1)[0]-1, smellySpaces.get(1)[1]).visited){
-						wompus_found = true;
-						System.out.println("You think there is a wumpus near by.");
-						wompus_Pos[0] = smellySpaces.get(1)[0]-1;
-						wompus_Pos[1] = smellySpaces.get(1)[1];
-					}
-				}else {
-					//We don't know which one the wompus is in yet, but could do more checks.
+				} catch (Exception e) {
+					// TODO: handle exception
 				}
 				
 			}else {
-				// TODO needs to handle a IndexOutOfBoundsException
-				if(get_Kbs(smellySpaces.get(0)[0]-1, smellySpaces.get(0)[1]).visited) {
-					if(!get_Kbs(smellySpaces.get(0)[0], smellySpaces.get(0)[1]-1).visited) {
-						wompus_found = true;
-						System.out.println("You think there is a wumpus near by.");
-						wompus_Pos[0] = smellySpaces.get(0)[0];
-						wompus_Pos[1] = smellySpaces.get(0)[1]-1;
+				try {
+					if(get_Kbs(smellySpaces.get(0)[0]-1, smellySpaces.get(0)[1]).visited) {
+						if(!get_Kbs(smellySpaces.get(0)[0], smellySpaces.get(0)[1]-1).visited) {
+							wompus_found = true;
+							System.out.println("You think there is a wumpus near by.");
+							wompus_Pos[0] = smellySpaces.get(0)[0];
+							wompus_Pos[1] = smellySpaces.get(0)[1]-1;
+						}
+							
+					}else if(get_Kbs(smellySpaces.get(0)[0], smellySpaces.get(0)[1]-1).visited){
+						if(!get_Kbs(smellySpaces.get(0)[0]-1, smellySpaces.get(0)[1]).visited){
+							wompus_found = true;
+							System.out.println("You think there is a wumpus near by.");
+							wompus_Pos[0] = smellySpaces.get(0)[0]-1;
+							wompus_Pos[1] = smellySpaces.get(0)[1];
+						}
+					}else {
+						//We don't know which one the wompus is in yet, but could do more checks.
+						System.out.println("You think there is a wumpus near by, but you are unsure...");
 					}
-						
-				}else if(get_Kbs(smellySpaces.get(0)[0], smellySpaces.get(0)[1]-1).visited){
-					if(!get_Kbs(smellySpaces.get(0)[0]-1, smellySpaces.get(0)[1]).visited){
-						wompus_found = true;
-						System.out.println("You think there is a wumpus near by.");
-						wompus_Pos[0] = smellySpaces.get(0)[0]-1;
-						wompus_Pos[1] = smellySpaces.get(0)[1];
-					}
-				}else {
-					//We don't know which one the wompus is in yet, but could do more checks.
-					System.out.println("You think there is a wumpus near by, but you are unsure...");
+				} catch (Exception e) {
+					// TODO: handle exception
 				}
+				// TODO needs to handle a IndexOutOfBoundsException
 			}
 			
 		}
@@ -295,6 +305,35 @@ public class KnowledgeBase{
 		return this.frontier.size();
 	}
 	
+	//TODO: edit to work for kbs for easy debugging
+	private void printMaze() {
+		for (int row=0; row<kbs.size(); row++) {
+			for (int col=0; col<kbs.size(); col++) {
+				String tmp = "K";
+				//If the square is fake, mark it with F
+				if(kbs.get(row).get(col).fake) {
+					tmp = "F";
+				}
+				//If this position is on the frontier, temp = K
+				for (ModelSet modelSet : frontier) {
+					if(modelSet.getX() == col && modelSet.getY() == row) {
+						tmp = "M";
+					}
+				}
+				for (int i=0; i<EnvType.values().length; i++) {
+					if(kbs.get(row).get(col).fake) {
+						tmp += "_";
+					}
+					else {
+						tmp += kbs.get(row).get(col).environment_attributes[i] ? "1" : "0";
+					}
+				}
+				System.out.print(tmp + ", ");
+				}
+				System.out.println();
+			}
+	}
+	
 	public void updateKbs(Square square) { // add squares one at a time to updateKbs
 		// col and row of square 
 		int col_coord = square.col;
@@ -322,9 +361,10 @@ public class KnowledgeBase{
 		ArrayList<int[]> adjacent_squares = getSurroundingPos(col_coord, row_coord);
 		
 		// check if adjacent squares are in frontier already or if contained in kbs
+		//TODO: FIX PROBLEM HERE
 		for (int[] pos : adjacent_squares) {
-			int pos_X = pos[0]+col_coord;
-			int pos_Y = pos[1]+row_coord;
+			int pos_X = pos[0];
+			int pos_Y = pos[1];
 			try {
 				Square tempS = get_Kbs(pos_X, pos_Y);
 				continue;
