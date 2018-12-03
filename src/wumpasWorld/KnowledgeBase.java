@@ -282,6 +282,10 @@ public class KnowledgeBase{
 		}
 	}
 	
+	public int get_frontier_size() {
+		return this.frontier.size();
+	}
+	
 	public void updateKbs(Square square) { // add squares one at a time to updateKbs
 		// col and row of square 
 		int col_coord = square.col;
