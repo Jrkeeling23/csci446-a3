@@ -266,27 +266,20 @@ public class KnowledgeBase{
 	 * @param col
 	 * @return the square in KBS at row, col
 	 */
-	public Square get_Kbs(int row, int col)  {
-		// try- catch for the index out of bounds exception . 
-		try {
-			if (row >= kbs.size() || col >= kbs.get(row).size()) {
-				// note: i am not sure why this calls change array list size. Update kbs should be the only one that does I think
-				changeArrayListSize(kbs);
-			}
-			// get the element
-			
-			}
-		catch(IndexOutOfBoundsException e){
+	public Square get_Kbs(int row, int col) throws IndexOutOfBoundsException {
+		// check if KBS is actually big enough
+		if (row >= kbs.size() || col >= kbs.get(row).size()) {
+			changeArrayListSize(kbs);
 		}
+		// get the element
 		Square element = kbs.get(row).get(col);
 		if (element.fake) {
 			// element is not in the KBS
-		//throw new IndexOutOfBoundsException();
-	}
+			throw new IndexOutOfBoundsException();
+		}
 		else {
 			return element;
-	}
-		return element;
+		}
 	}
 	
 	public void updateKbs(Square square) { // add squares one at a time to updateKbs
