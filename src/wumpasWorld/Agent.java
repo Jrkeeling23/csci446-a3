@@ -14,6 +14,7 @@ public class Agent {
 		kb.current_square = start;
 		follow_path = new ArrayList<>();
 		// TODO finish initial set up of the agent
+		
 	}
 	
 	public boolean agent_cycle(Square agent_square) {
@@ -21,7 +22,12 @@ public class Agent {
 		boolean end_game = this.getPrecepts(agent_square);
 		
 		if (end_game) {
+
 			return false;
+
+			// TODO end game, update points
+			
+
 		}
 		
 		// don't update frontier if we are following a path
@@ -110,8 +116,9 @@ public class Agent {
 	 * @param Action
 	 */
 	public void performAction(Action act) {
-		if (act == Action.Follow) {
+		if (act == Action.Follow && !follow_path.isEmpty()) {
 			Square tmp = follow_path.get(0);
+			//tmp.printEnv();
 			Action movement = move_to(tmp);
 			// move or rotate
 			if (movement == Action.Move) {

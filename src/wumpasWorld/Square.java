@@ -60,4 +60,11 @@ public class Square {
     	return same_pos && this.fake == squ.fake && this.visited == squ.visited;
     	
     }
+    // temporary print function just to determine what squares were being added the kbs.
+    public void printEnv() {
+    	for (int i = 0; i < EnvType.values().length; i ++) {
+    		System.out.print(environment_attributes[i]);
+    	}
+    	System.out.println();
+    }
 }
