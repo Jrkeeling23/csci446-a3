@@ -119,7 +119,11 @@ public class Agent {
 	public void performAction(Action act) {
 		if (act == Action.Follow) {
 				if(follow_path.size()>0) {
-				System.out.println("Follow Path:"+follow_path);
+					//Prints out path agent is ment to follow
+					for (Square sq : follow_path) {
+						System.out.println("Follow Path:"+sq.col+", "+sq.row);
+					}
+				
 				Square tmp = follow_path.get(0);
 				//tmp.printEnv();
 				Action movement = move_to(tmp);
