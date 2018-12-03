@@ -294,7 +294,4 @@ public class MazeBuilder {
 		int[] coords = {rand_row, rand_col};
 		return coords;
 	}
-	public Square[][] getMaze() {
-		return maze;
-	}
 }

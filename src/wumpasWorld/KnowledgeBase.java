@@ -267,7 +267,6 @@ public class KnowledgeBase{
 	 * @return the square in KBS at row, col
 	 */
 	public Square get_Kbs(int row, int col) throws IndexOutOfBoundsException {
-<<<<<<< Updated upstream
 		// check if KBS is actually big enough
 		try {
 			if (row >= kbs.size() || col >= kbs.get(row).size()) {
@@ -277,12 +276,6 @@ public class KnowledgeBase{
 			System.out.println("kbs.get() returned a fake square");
 		}
 		
-=======
-		// check KBS is big enough
-		if (row >= kbs.size() || col >= kbs.get(row).size()) {
-			changeArrayListSize(kbs);
-		}
->>>>>>> Stashed changes
 		// get the element
 		Square element = kbs.get(row).get(col);
 		if (element.fake) {
@@ -292,13 +285,10 @@ public class KnowledgeBase{
 		else {
 			return element;
 		}
-<<<<<<< Updated upstream
 	}
 	
 	public int get_frontier_size() {
 		return this.frontier.size();
-=======
->>>>>>> Stashed changes
 	}
 	
 	public void updateKbs(Square square) { // add squares one at a time to updateKbs
@@ -529,27 +519,40 @@ public class KnowledgeBase{
 		
 		return surrounding;
 	}
-	
+	/**
+	 * Changes the kbs array list size in case the maze is larger than the minimum size the maze can be
+	 */
 	private void changeArrayListSize(ArrayList<ArrayList <Square>>  list) {
-		int length = list.size()*2;
 		
+		// double the size of the array list
+		int length = list.size()*2;
+		System.out.println("length " + length);
 		ArrayList<Square> row;
 		ArrayList<ArrayList <Square>> newList = new ArrayList<ArrayList<Square>>();
 		
+		// iterate through to instantiate a new square instance for the row, which will be appended to the new list
 		for(int i = 0; i <length; i ++) {
 			row = new ArrayList<Square>(length);
 			for(int j = 0; j <length; j ++) {
+				// new square instance 
 				Square fakeSquare = new Square(i, j);
+				// set the fake flag in square instance to true, this determines which values need to be written over with the smaller kbs.
 				fakeSquare.fake = true;
+				// add the square to the row list
 				row.add(fakeSquare);
 			}
+			// add the row to the new list, which will become the larger kbs
 			newList.add(row);
 		}
+		// merges important values from the smaller kbs back to the new larger kbs
 		mergeLists(list, newList, length);
 	}
 	
+	
+	// method called from changeArrayListSize(). This method takes the current knowledge base and places them into a larger arraylist to represent kbs
 	private void mergeLists(ArrayList<ArrayList <Square>>  list, ArrayList<ArrayList <Square>>  newList, int length) {
-		
+		// only need to check half the length since the old array list is half the size
+		// remember, we are only pulling values from the smaller kbs arraylist to add the the new larger kbs array list
 		for(int i = 0; i <length/2; i ++) {
 			for(int j = 0; j < length/2; j++) {
 				if(list.get(i).get(j).fake == false) {
@@ -558,8 +561,10 @@ public class KnowledgeBase{
 			}
 		}
 	}
+	// This function initializes the size of the initial kbs to the size of the smallest maze to beigin with
 	private ArrayList<ArrayList<Square>> initializeKbsSize() {
 		ArrayList<Square> row;
+		// kbs array list values are set to "fake squares" using the fake flag (boolean variable)
 		ArrayList<ArrayList<Square>> kbs_to_be = new ArrayList<ArrayList<Square>>();
 		for(int i = 0; i< 5; i++) {
 			row = new ArrayList<Square>();
@@ -570,6 +575,7 @@ public class KnowledgeBase{
 			}
 			kbs_to_be.add(row);
 		}
+		// return this initial fake set of values to the class variable kbs
 		return kbs_to_be;
 	}
 	
@@ -610,5 +616,17 @@ public class KnowledgeBase{
 	//Setters
 	public void setPoints(int p) {
 		points = p;
+	}
+	
+	// just a temporary print function to see what was happening. 
+	public void printKbs(int row, int col) {
+//		for(int i = 0; i < kbs.size(); i ++) {
+//			for(int j = 0; j < kbs.size(); j ++) {
+//				Square square = kbs.get(i).get(j);
+//				square.printEnv();
+//			}
+//		}
+		System.out.println(row + col);
+		kbs.get(row).get(col).printEnv();
 	}
 }
