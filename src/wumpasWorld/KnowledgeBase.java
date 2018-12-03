@@ -53,6 +53,7 @@ public class KnowledgeBase{
 		current_square = currentSquare;
 		printMaze();
 		updateKbs(currentSquare);
+		//updateFrontier(getCurrentSquare());
 		printMaze();
 		//TODO: needs to update frontier
 	}
@@ -309,15 +310,24 @@ public class KnowledgeBase{
 	private void printMaze() {
 		for (int row=0; row<kbs.size(); row++) {
 			for (int col=0; col<kbs.size(); col++) {
-				String tmp = "K";
+				String tmp = "NK";
+				if(kbs.get(row).get(col).visited) {
+					tmp = "VK";
+				}
 				//If the square is fake, mark it with F
 				if(kbs.get(row).get(col).fake) {
-					tmp = "F";
+					tmp = "NF";
+					if(kbs.get(row).get(col).visited) {
+						tmp = "VF";
+					}
 				}
 				//If this position is on the frontier, temp = K
 				for (ModelSet modelSet : frontier) {
 					if(modelSet.getX() == col && modelSet.getY() == row) {
-						tmp = "M";
+						tmp = "NM";
+						if(kbs.get(row).get(col).visited) {
+							tmp = "VM";
+						}
 					}
 				}
 				for (int i=0; i<EnvType.values().length; i++) {
