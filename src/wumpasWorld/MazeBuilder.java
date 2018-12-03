@@ -121,13 +121,6 @@ public class MazeBuilder {
 		}
 	}
 	
-	//checks if the value x is larger than the size of the maze permits
-	public static boolean outOfBoundsCheck(int x) {
-		if(x >= maze.length) {
-			return false;
-		}
-		return true;
-	}
 	/**
 	 * adds the given environment object to all square adjacent to the given coordinates
 	 * will ignore out of bounds squares

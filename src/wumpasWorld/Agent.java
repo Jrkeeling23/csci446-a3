@@ -169,11 +169,11 @@ public class Agent {
 	
 	/**
 	 * Gets the action required to point at the target square
-	 * @param target square to point at, should be adjcent to the current square
+	 * @param target square to point at, should be adjacent to the current square
 	 * @return Action, a rotation or Move
 	 * @throws IllegalArgumentException
 	 */
-	public Action point_at_target_action(Square target) throws IllegalArgumentException {
+	private Action point_at_target_action(Square target) throws IllegalArgumentException {
 		Square current = kb.getCurrentSquare();
 		// get delta pos
 		int dr = target.row - current.row;
@@ -258,7 +258,7 @@ public class Agent {
 	 * @param target_col
 	 * @return path List of squares in the optimal path, empty if there is no path to the square
 	 */
-	public ArrayList<Square> get_optimal_path(int target_row, int target_col) {
+	private ArrayList<Square> get_optimal_path(int target_row, int target_col) {
 		try {
 			// get current square
 			Square current = kb.getCurrentSquare();
@@ -276,7 +276,7 @@ public class Agent {
 		}
 	}
 	
-	public boolean closest_unvisited() {
+	private boolean closest_unvisited() {
 		// get current square
 		Square current = kb.getCurrentSquare();
 		// get the closest Square that has not been visited
@@ -291,7 +291,7 @@ public class Agent {
 		return true;
 	}
 	
-	public ArrayList<Square> closest_EnvType(EnvType env){
+	private ArrayList<Square> closest_EnvType(EnvType env){
 		// get current square
 		Square current = kb.getCurrentSquare();
 		// find optimal path to closest stench

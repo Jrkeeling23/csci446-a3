@@ -172,16 +172,8 @@ public class FirstOrderLogic {
 			}else {
 				System.out.println("You have bumped into a wall");
 				if(!kb.wall_hit) {
-				kb.wall_hit = true;
+					kb.wall_hit = true;
 				}
-			}
-			return false;
-		};
-		
-		//checks if there is a wall at the position specified (if the pos is out of bounds)
-		hitwall = (x,y) -> {
-			if(!MazeBuilder.outOfBoundsCheck(x)||!MazeBuilder.outOfBoundsCheck(y)||(x<0)||(y<0)) {
-				return true;
 			}
 			return false;
 		};

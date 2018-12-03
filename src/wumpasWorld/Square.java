@@ -42,4 +42,22 @@ public class Square {
     public boolean equals(Square squ) {
     	return this.row == squ.row && this.col == squ.col;
     }
+    
+    /**
+     * Stronger equals function, requires all contents of the Squares to be equal
+     * @param squ to compare to this one
+     * @return true if they are the same
+     */
+    public boolean content_equals(Square squ) {
+    	boolean same_pos = (this.row == squ.row && this.col == squ.col);
+    	
+    	for (int i=0; i<Square.env_size; i++) {
+    		// all elements must be the same
+    		if (this.environment_attributes[i] != squ.environment_attributes[i]) {
+    			return false;
+    		}
+    	}
+    	return same_pos && this.fake == squ.fake && this.visited == squ.visited;
+    	
+    }
 }

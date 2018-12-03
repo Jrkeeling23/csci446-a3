@@ -41,9 +41,9 @@ public class KnowledgeBase{
 		points = 0;
 		//current maze size. But only do so when wall_hit = false
 		mazeSize = 1;
-		
-		//Initialzes agent's direction to 'south' (facing down from the top left)
+		// Initializes agent's direction to 'south' (facing down from the top left)
 		current_direction = Direction.south;
+		smellySpaces = new ArrayList<>();
 		
 		FirstOrderLogic.init(this);
 		kbs = initializeKbsSize();
@@ -52,7 +52,6 @@ public class KnowledgeBase{
 	public void setCurrentSquare(Square currentSquare) {
 		current_square = currentSquare;
 		updateKbs(currentSquare);
-		
 	}
 	
 	public Square getCurrentSquare() {
@@ -274,6 +273,7 @@ public class KnowledgeBase{
 		// get the element
 		Square element = kbs.get(row).get(col);
 		if (element.fake) {
+			// element is not in the KBS
 			throw new IndexOutOfBoundsException();
 		}
 		else {
@@ -287,15 +287,16 @@ public class KnowledgeBase{
 		int row_coord = square.row;
 		
 		try {
-			if (!get_Kbs(row_coord, col_coord).equals(square)){
+			if (!get_Kbs(row_coord, col_coord).content_equals(square)){
+				// in KBS but not equal
 				kbs.get(row_coord).set(col_coord, square);
 			}
 		}
+		// get_Kbs handles changeArrayListSize, so here we want to just add a square
 		catch(IndexOutOfBoundsException e) {
-			changeArrayListSize(kbs);
+			// not in the KBS
+			kbs.get(row_coord).set(col_coord, square);
 		}
-		
-			
 	}
 	
 	public void updateFrontier(Square square) {
@@ -316,7 +317,7 @@ public class KnowledgeBase{
 				//This should be reached if it meets the conditions for not being in the kbs
 				
 				//Checks for out of bounds issues
-				if(MazeBuilder.outOfBoundsCheck(pos_X)&&MazeBuilder.outOfBoundsCheck(pos_Y)&&(pos_X>=0)&&(pos_Y>=0)) {
+				if(is_out_of_bounds(pos_X) && is_out_of_bounds(pos_Y)) {
 					for (ModelSet ms : frontier) {
 						//checks if the adjacent node is already in the frontier
 						if((ms.getX() == pos_X)&&(ms.getY() == pos_Y)) {
@@ -346,8 +347,8 @@ public class KnowledgeBase{
 			for (int[] pos : surrounding_positions) {
 				//Adds the actual square to surrounding squares
 				try {
-					//In a try catch incase we don't actually know about that square
-					if(!(MazeBuilder.outOfBoundsCheck(pos[0])||MazeBuilder.outOfBoundsCheck(pos[1])||(pos[0]<0)||(pos[1]<0))) {
+					//In a try catch in case we don't actually know about that square
+					if(!(is_out_of_bounds(pos[0]) || is_out_of_bounds(pos[1]))) {
 						Square temp_square = get_Kbs(pos[0],pos[1]);
 							if(temp_square.visited)
 								surrounding_squares.add(temp_square);
@@ -371,7 +372,7 @@ public class KnowledgeBase{
 					ms.removeModel(EnvType.wumpus);
 				}
 				//attempts 2nd order logic to deduce the wompus's location if it hasn't been found already
-				if(!wompus_found&&FirstOrderLogic.smells.Smells(square)) {
+				if(!wompus_found && FirstOrderLogic.smells.Smells(square)) {
 					//Needs to check now to see if we know about all the surrounding squares (in maze bounds)
 					ArrayList<int[]> checkIfKnownPos = getSurroundingPos(square.col, square.row);
 					ArrayList<Square> checkIfKnown =  new ArrayList<>();
@@ -382,7 +383,7 @@ public class KnowledgeBase{
 						try {
 							//In a try catch in case we don't actually know about that square
 							//check for if the position is within the maze bounds, otherwise don't attempt to add it
-							if(!(MazeBuilder.outOfBoundsCheck(pos[0])||MazeBuilder.outOfBoundsCheck(pos[1])||(pos[0]<0)||(pos[1]<0))) {
+							if(!(is_out_of_bounds(pos[0]) || is_out_of_bounds(pos[1]))) {
 								Square temp_square = get_Kbs(pos[0],pos[1]);
 									checkIfKnown.add(temp_square);
 							}
@@ -416,7 +417,7 @@ public class KnowledgeBase{
 						try {
 							//In a try catch in case we don't actually know about that square
 							//check for if the position is within the maze bounds, otherwise don't attempt to add it
-							if(!(MazeBuilder.outOfBoundsCheck(pos[0])||MazeBuilder.outOfBoundsCheck(pos[1])||(pos[0]<0)||(pos[1]<0))) {
+							if(!(is_out_of_bounds(pos[0]) || is_out_of_bounds(pos[1]))) {
 								Square temp_square = get_Kbs(pos[0],pos[1]);
 									checkIfKnown.add(temp_square);
 							}
@@ -452,6 +453,26 @@ public class KnowledgeBase{
 		}
 	}
 	
+	/**
+	 * Finds if the given coordinate is out of bounds given the current state of the KB
+	 * @param distance
+	 * @return true if it is out of bounds
+	 */
+	public boolean is_out_of_bounds(int distance) {
+		if (distance < 0) {
+			// Negative values are always out of bounds
+			return true;
+		}
+		if (wall_hit) {
+			// we do know how big the maze is
+			return distance < mazeSize;
+		}
+		else {
+			// we don't know how big the maze is
+			return false;
+		}
+	}
+	
 	//Returns surrounding positions as long as they are not out of bounds
 	public ArrayList<int[]> getSurroundingPos(int x, int y) {
 		
@@ -459,15 +480,11 @@ public class KnowledgeBase{
 		int[] surrounding_y = {1,-1,0,0};
 		
 		ArrayList<int[]> surrounding = new ArrayList<>();
-		int[] pos = new int[2];
 		
 		for(int i = 0; i < 4; i++) {
 			//checks if the new position is even valid before adding it to the returning list
-			if(((x+surrounding_x[i]>0)&&(MazeBuilder.outOfBoundsCheck(x+surrounding_x[i]))) 
-					&& ((y+surrounding_y[i]>0)&&(MazeBuilder.outOfBoundsCheck(y+surrounding_y[i])))) {
-				pos[0] = x+surrounding_x[i];
-				pos[1] = y+surrounding_y[i];
-				
+			if(!is_out_of_bounds(x + surrounding_x[i]) && !is_out_of_bounds(y + surrounding_y[i])) {
+				int[] pos = {x + surrounding_x[i], y + surrounding_y[i]};
 				surrounding.add(pos);
 			}
 		}
@@ -490,9 +507,7 @@ public class KnowledgeBase{
 			}
 			newList.add(row);
 		}
-		
 		mergeLists(list, newList, length);
-			
 	}
 	
 	private void mergeLists(ArrayList<ArrayList <Square>>  list, ArrayList<ArrayList <Square>>  newList, int length) {
