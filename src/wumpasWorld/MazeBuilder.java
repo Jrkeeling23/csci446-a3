@@ -36,6 +36,7 @@ public class MazeBuilder {
 		int[] pos = add_1_object(EnvType.wumpus, false);
 		// place all 4 stenches
 		add_object_to_adjs(pos[0], pos[1], EnvType.stench);
+		wumpus = new int[2];
 		wumpus[0] = pos[0];
 		wumpus[1] = pos[1];
 		// place gold
@@ -58,7 +59,7 @@ public class MazeBuilder {
 			int y = KnowledgeBase.getCurrentSquare().row;
 			
 			//Evaluates the direction
-			switch (KnowledgeBase.current_direction) {
+			switch (FirstOrderLogic.kb.current_direction) {
 			case north:
 				//y-- checks if the wumpas is aligned with the agent's x coordinate, and that they are firing
 				//in the proper direction.
@@ -92,7 +93,7 @@ public class MazeBuilder {
 	public static boolean checkValidForward(int x, int y) {
 		
 		//checks if the agent is going out of bounds when moving in a specific direction
-		switch (KnowledgeBase.current_direction) {
+		switch (FirstOrderLogic.kb.current_direction) {
 		case north:
 			//y--
 			if((y-1) >= 0) {

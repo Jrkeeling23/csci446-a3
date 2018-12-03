@@ -11,6 +11,7 @@ public class Agent {
 	
 	public Agent(Square start) {
 		kb = new KnowledgeBase();
+		KnowledgeBase.current_square = start;
 		follow_path = new ArrayList<>();
 		// TODO finish initial set up of the agent
 	}
@@ -59,7 +60,7 @@ public class Agent {
 		
 		// finish this update
 		// update number of stinks found
-		if(current.environment_attributes[2] && !KnowledgeBase.wompus_found) {
+		if(current.environment_attributes[2] && !kb.getWompusFound()) {
 			kb.foundASmell();
 		}
 		return false;			
@@ -70,15 +71,15 @@ public class Agent {
 	 * @return Action
 	 */
 	public Action actionQuery() {
-		if (KnowledgeBase.wompus_found && KnowledgeBase.wompus_alive &&
-				!kb.get_Kbs(KnowledgeBase.wompus_Pos[0], KnowledgeBase.wompus_Pos[1]).has_obj(EnvType.pit) &&
+		if (kb.getWompusFound() && kb.getWompusAlive() &&
+				!kb.get_Kbs(kb.wompus_Pos[0], kb.getWompusPos()[1]).has_obj(EnvType.pit) &&
 				KnowledgeBase.current_square.has_obj(EnvType.stench)) {
 			return Action.Shoot;
 		}
 		else if (follow_path.size() > 0) {
 			return Action.Follow;
 		}
-		else if (KnowledgeBase.player_has_gold) {
+		else if (kb.has_gold()) {
 			this.follow_path = this.get_optimal_path(0, 0);
 			return Action.Follow;
 		}
@@ -87,8 +88,8 @@ public class Agent {
 			return Action.Follow;
 		}
 		// Wumpus is still alive and not on a pit -> navigate to adj square
-		else if (KnowledgeBase.wompus_found && KnowledgeBase.wompus_alive &&
-				!kb.get_Kbs(KnowledgeBase.wompus_Pos[0], KnowledgeBase.wompus_Pos[1]).has_obj(EnvType.pit)) {
+		else if (kb.getWompusFound() && kb.getWompusAlive() &&
+				!kb.get_Kbs(kb.getWompusPos()[0], kb.getWompusPos()[1]).has_obj(EnvType.pit)) {
 			// Requires moving to the correct square first
 			this.follow_path = this.closest_EnvType(EnvType.stench);
 			return Action.Follow;
@@ -121,29 +122,29 @@ public class Agent {
 					// remove square from follow list
 					follow_path.remove(0);
 					// update points
-					KnowledgeBase.points -= 1;
+					kb.setPoints(kb.getPoints()-1);
 				}
 				else {
 					// TODO move not possible
 					follow_path.clear();
-					KnowledgeBase.points -= 1;
+					kb.points -= 1;
 				}
 			}
 			else if (movement == Action.RotateCW) {
 				// rotate
-				KnowledgeBase.rotate(movement);
+				kb.rotate(movement);
 			}
 		}
 		else if (act == Action.Shoot) {
 			// get how to point at the wumpus
-			Action tmp = point_at_target_action(kb.get_Kbs(KnowledgeBase.wompus_Pos[0], KnowledgeBase.wompus_Pos[1]));
+			Action tmp = point_at_target_action(kb.get_Kbs(kb.wompus_Pos[0], kb.wompus_Pos[1]));
 			if (tmp == Action.Move) {
 				// shoot
 				FirstOrderLogic.shoot.shoot();
 			}
 			else {
 				// rotate
-				KnowledgeBase.rotate(tmp);
+				kb.rotate(tmp);
 			}
 		}
 	}
@@ -193,12 +194,13 @@ public class Agent {
 		}
 		
 		// Evaluates a move condition
-		if (KnowledgeBase.current_direction == target_dir) {
+		if (kb.current_direction == target_dir) {
 			return Action.Move;
 		}
 		
 		// Evaluates rotation direction
-		switch (KnowledgeBase.current_direction) {
+		switch (kb
+				.current_direction) {
 		case north:
 			//y-- 
 			if (target_dir == Direction.west) {
@@ -366,5 +368,9 @@ public class Agent {
 		}
 		// path not possible
 		return null;	
+	}
+	
+	public KnowledgeBase getKB() {
+		return kb;
 	}
 }

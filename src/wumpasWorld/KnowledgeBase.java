@@ -4,17 +4,17 @@ import java.util.ArrayList;
 
 public class KnowledgeBase{
 	
-	static boolean player_has_gold;
-	static boolean player_returning_to_start;
-	static boolean wall_hit;
-	static boolean wompus_alive;
-	static boolean wompus_found;
-	static int[] wompus_Pos;
-	static ArrayList<int[]> smellySpaces;
-	static boolean have_arrow;
-	static boolean heard_scream;
-	static Direction current_direction;
-	static int points;
+	boolean player_has_gold;
+	boolean player_returning_to_start;
+	boolean wall_hit;
+	boolean wompus_alive;
+	boolean wompus_found;
+	int[] wompus_Pos;
+	ArrayList<int[]> smellySpaces;
+	 boolean have_arrow;
+	boolean heard_scream;
+	Direction current_direction;
+	int points;
 	
 	static int mazeSize;
 	
@@ -26,7 +26,7 @@ public class KnowledgeBase{
 	
 	// add squares that are have been visited or proven by FOL to kbs,(kbs = knowledge base square)
 	// set the array list to smallest known possible maze size
-	public ArrayList<ArrayList<Square>> kbs = initializeKbsSize();
+	public ArrayList<ArrayList<Square>> kbs;
 	
 	
 	public void init() {
@@ -45,7 +45,8 @@ public class KnowledgeBase{
 		//Initialzes agent's direction to 'south' (facing down from the top left)
 		current_direction = Direction.south;
 		
-		FirstOrderLogic.init();
+		FirstOrderLogic.init(this);
+		kbs = initializeKbsSize();
 	}
 	
 	public void setCurrentSquare(Square currentSquare) {
@@ -62,7 +63,7 @@ public class KnowledgeBase{
 	 * Rotates the Agent in the given direction
 	 * @param Action, RotateCCW or RotateCW
 	 */
-	public static void rotate(Action act) {
+	public void rotate(Action act) {
 		Direction[] dir = Direction.values();
 		int i;
 		if (act == Action.RotateCCW) {
@@ -504,12 +505,56 @@ public class KnowledgeBase{
 		}
 	}
 	private ArrayList<ArrayList<Square>> initializeKbsSize() {
-		ArrayList<Square> row = new ArrayList<Square>(5);
-		ArrayList<ArrayList<Square>> kbs_to_be = new ArrayList<ArrayList<Square>>(5);
-		for(int i = 0; i< row.size(); i++) {
+		ArrayList<Square> row;
+		ArrayList<ArrayList<Square>> kbs_to_be = new ArrayList<ArrayList<Square>>();
+		for(int i = 0; i< 5; i++) {
+			row = new ArrayList<Square>();
+			for(int j = 0; j <row.size(); j++) {
+				Square temp = new Square(i,j);
+				temp.fake = true;
+				row.add(temp);
+			}
 			kbs_to_be.add(row);
 		}
 		return kbs_to_be;
 	}
 	
+	//Getters
+	public boolean has_gold() {
+		return player_has_gold;
+	}
+	public boolean getIfReturningStart() {
+		return player_returning_to_start;
+	}
+	public boolean getWallHit() {
+		return wall_hit;
+	}
+	public boolean getWompusAlive() {
+		return wompus_alive;
+	}
+	public boolean getWompusFound() {
+		return wompus_found;
+	}
+	public boolean getHaveArrow() {
+		return have_arrow;
+	}
+	public boolean getHeardScream() {
+		return heard_scream;
+	}
+	public Direction getCurrentDirection() {
+		return current_direction;
+	}
+	public int[] getWompusPos() {
+		return wompus_Pos;
+	}
+	public ArrayList<int[]> getSmellySpaces(){
+		return smellySpaces;
+	}
+	public int getPoints() {
+		return points;
+	}
+	//Setters
+	public void setPoints(int p) {
+		points = p;
+	}
 }

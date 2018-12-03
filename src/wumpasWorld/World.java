@@ -19,7 +19,7 @@ public class World {
 			while(running) {
 				running = agent.agent_cycle(maze[KnowledgeBase.getCurrentSquare().col][KnowledgeBase.getCurrentSquare().row]);
 			}
-			points = KnowledgeBase.points;
+			points = agent.getKB().points;
 		}
 		
 		private static void testing_maze_printout(Square[][] maze) {
