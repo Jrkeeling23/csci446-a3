@@ -107,8 +107,8 @@ public class MazeBuilder {
 	 */
 	public void test_maze_06(){
 		int[] w = {3, 3};
-		int[] g = {3, 3};
-		int[][] p = {{3, 1}};
+		int[] g = {3, 0};
+		int[][] p = {{2, 1}};
 		make_test_maze(w, g, p);
 	}
 	

@@ -308,29 +308,38 @@ public class KnowledgeBase{
 	public void printMaze() {
 		for (int row=0; row<kbs.size(); row++) {
 			for (int col=0; col<kbs.size(); col++) {
-				String tmp = "NK";
+				boolean fs = false;
+				String tmp = "N";
 				if(kbs.get(row).get(col).visited) {
-					tmp = "VK";
+					tmp = "V";
 				}
 				//If the square is fake, mark it with F
 				if(kbs.get(row).get(col).fake) {
-					tmp = "NF";
+					tmp = "N";
 					if(kbs.get(row).get(col).visited) {
-						tmp = "VF";
+						tmp = "V";
 					}
 				}
 				//If this position is on the frontier, temp = K
 				for (ModelSet modelSet : frontier) {
 					if(modelSet.getX() == row && modelSet.getY() == col) {
-						tmp = "NM";
+						fs = true;
+						tmp = "N";
 						if(kbs.get(row).get(col).visited) {
-							tmp = "VM";
+							tmp = "V";
 						}
+						tmp += modelSet.getModels().size();
 					}
 				}
 				for (int i=0; i<EnvType.values().length; i++) {
 					if(kbs.get(row).get(col).fake) {
-						tmp += "_";
+						if (fs) {
+							if (i>0)
+								tmp += "#";
+						}
+						else {
+							tmp += "_";
+						}
 					}
 					else {
 						tmp += kbs.get(row).get(col).environment_attributes[i] ? "1" : "0";

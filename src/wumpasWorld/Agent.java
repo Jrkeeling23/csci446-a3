@@ -44,9 +44,11 @@ public class Agent {
 			// update frontier
 			kb.updateFrontier(kb.getCurrentSquare());
 			System.out.println("Frontier size:" + kb.get_frontier_size());
+			kb.printMaze();
 			// trim frontier
 			kb.trimFrontier();
 			System.out.println("Frontier size:" + kb.get_frontier_size());
+			kb.printMaze();
 		}
 		
 		// action query
