@@ -123,6 +123,7 @@ public class FirstOrderLogic {
 		die = () -> {
 			if(pit.Pit()||wompus.is_Wompus()) {
 				//Triggers game's end
+				kb.points -= 1000;
 				return true;
 			}
 			return false;

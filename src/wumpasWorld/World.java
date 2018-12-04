@@ -12,7 +12,7 @@ public class World {
 		// build a maze
 		MazeBuilder maze_obj = new MazeBuilder(maze_size);
 		// TODO remove test maze
-		maze_obj.test_maze_01();
+		//maze_obj.test_maze_01();
 		Square[][] maze = maze_obj.get_maze();
 		
 		// make the agent
@@ -31,8 +31,8 @@ public class World {
 	
 	private void printMaze(Square[][] maze) {
 		System.out.println("glitter, breeze, stench, wumpus, pit");
-		for (int row=0; row<4; row++) {
-			for (int col=0; col<4; col++) {
+		for (int row=0; row<maze.length; row++) {
+			for (int col=0; col<maze.length; col++) {
 				String tmp = "";
 				for (int i=0; i<env_size; i++) {
 					tmp += maze[row][col].environment_attributes[i] ? "1" : "0";

@@ -24,18 +24,16 @@ public class Agent {
 		kb.printMaze();
 		System.out.println("currently at " + kb.current_square.row + " " + kb.current_square.col);
 		
+		// check if the agent can escape
+		boolean escape = FirstOrderLogic.climb.climb();
 		
 		if (!kb.current_square.visited) {
 			end_game = this.getPrecepts(agent_square);
 		}
-
-		// check if the agent can escape
-		end_game = FirstOrderLogic.climb.climb();
 		
-		if (end_game) {
+		if (end_game || escape) {
 			return false;
 		}
-		System.out.println("follow len:" + follow_path.size());
 		
 		// don't update frontier if we are following a path
 		// paths can only be on visited squares
