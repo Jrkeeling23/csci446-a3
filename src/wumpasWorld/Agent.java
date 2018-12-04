@@ -20,7 +20,11 @@ public class Agent {
 	public boolean agent_cycle(Square agent_square) {
 		// get precepts
 		boolean end_game = false;
+		
+		kb.printMaze();
 		System.out.println("currently at " + kb.current_square.row + " " + kb.current_square.col);
+		
+		
 		if (!kb.current_square.visited) {
 			end_game = this.getPrecepts(agent_square);
 		}

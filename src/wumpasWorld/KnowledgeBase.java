@@ -298,7 +298,7 @@ public class KnowledgeBase{
 	}
 	
 	//TODO: edit to work for kbs for easy debugging
-	private void printMaze() {
+	public void printMaze() {
 		for (int row=0; row<kbs.size(); row++) {
 			for (int col=0; col<kbs.size(); col++) {
 				String tmp = "NK";
@@ -362,7 +362,7 @@ public class KnowledgeBase{
 		int row_coord = square.row;
 		
 		//Makes a list of the adjacent squares
-		ArrayList<int[]> adjacent_squares = getSurroundingPos(col_coord, row_coord);
+		ArrayList<int[]> adjacent_squares = getSurroundingPos(row_coord, col_coord);
 		
 		// check if adjacent squares are in frontier already or if contained in kbs
 		for (int[] pos : adjacent_squares) {
@@ -580,6 +580,7 @@ public class KnowledgeBase{
 		// iterate through to instantiate a new square instance for the row, which will be appended to the new list
 		for(int i = 0; i <length; i ++) {
 			row = new ArrayList<Square>(length);
+			
 			for(int j = 0; j <length; j ++) {
 				// new square instance 
 				Square fakeSquare = new Square(i, j);

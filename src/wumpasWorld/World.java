@@ -11,6 +11,8 @@ public class World {
 	public World(int maze_size) {
 		// build a maze
 		MazeBuilder maze_obj = new MazeBuilder(maze_size);
+		// TODO remove test maze
+		maze_obj.test_maze_03();
 		Square[][] maze = maze_obj.get_maze();
 		
 		// make the agent

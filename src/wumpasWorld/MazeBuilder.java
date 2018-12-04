@@ -157,12 +157,12 @@ public class MazeBuilder {
 			}
 		case east:
 			//x++
-			if((x+1) < maze.length) {
+			if((x+1) <= maze.length) {
 				return true;
 			}
 		case south:
 			//y++
-			if((y+1) < maze.length) {
+			if((y+1) <= maze.length) {
 				return true;
 			}
 		case west:
