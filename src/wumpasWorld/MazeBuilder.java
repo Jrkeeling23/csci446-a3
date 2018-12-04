@@ -92,6 +92,26 @@ public class MazeBuilder {
 		make_test_maze(w, g, p);
 	}
 	
+	/**
+	 * replaces maze with a test maze for wumpus located at 1, 0
+	 */
+	public void test_maze_05(){
+		int[] w = {1, 0};
+		int[] g = {3, 3};
+		int[][] p = {{2, 3}};
+		make_test_maze(w, g, p);
+	}
+	
+	/**
+	 * replaces maze with a test maze for a pit located at 3, 1
+	 */
+	public void test_maze_06(){
+		int[] w = {3, 3};
+		int[] g = {3, 3};
+		int[][] p = {{3, 1}};
+		make_test_maze(w, g, p);
+	}
+	
 	private void make_test_maze(int[] w_pos, int[] gold_pos, int[][] pits_pos) {
 		maze = new Square[4][4];
 		// Initialize all squares
@@ -121,35 +141,38 @@ public class MazeBuilder {
 	//Uses the agent's position & direction to verify if the shot being taken hits or not without knowledge of
 	//the wumpus's actual position being reveiled to the agent.
 	public static boolean verifyWumpusHit() {
-			int x = FirstOrderLogic.kb.getCurrentSquare().row;
-			int y = FirstOrderLogic.kb.getCurrentSquare().col;
+			// horizontal position increases to the east
+			int col = FirstOrderLogic.kb.getCurrentSquare().col;
+			// vertical position increases to the south
+			int row = FirstOrderLogic.kb.getCurrentSquare().row;
 			
 			//Evaluates the direction
 			switch (FirstOrderLogic.kb.current_direction) {
 			case north:
-				//y-- checks if the wumpas is aligned with the agent's x coordinate, and that they are firing
+				//checks if the wumpus is aligned with the agent's col coordinate, and that they are firing
 				//in the proper direction.
-				if(x == wumpus[0] && y > wumpus[1]) {
+				// to hit the wumpus, the agent must be at larger row and same col
+				if(col == wumpus[1] && row > wumpus[0]) {
 					return true;
 				}
 			case east:
-				//x++
-				//checks if the wumpus is aligned with agent's y value, & the x pos of agent is less than that of the wumpus's
-				if(y == wumpus[1] && x < wumpus[0]) {
+				//checks if the wumpus is aligned with agent's row value, & the col pos of agent is less than that of the wumpus's
+				// to hit the wumpus, the agent must be at smaller col and same row
+				if(row == wumpus[0] && col < wumpus[1]) {
 					return true;
 				}
 			case south:
-				//y++
-				if(x == wumpus[0] && y < wumpus[1]) {
+				// to hit the wumpus, the agent must be at smaller row and same col
+				if(col == wumpus[1] && row < wumpus[0]) {
 					return true;
 				}
 			case west:
-				//x--
-				if(y == wumpus[1] && x > wumpus[0]) {
+				// to hit the wumpus, the agent must be at larger col and same row
+				if(row == wumpus[0] && col > wumpus[1]) {
 					return true;
 				}
 			default:
-				System.out.println("Agent has no direction");
+				//System.out.println("Agent has no direction");
 			return false;
 			}
 			

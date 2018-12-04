@@ -143,37 +143,38 @@ public class FirstOrderLogic {
 		
 		forward = () -> {
 			//evaluate x and y for next move based on direction
-			int temp_x = kb.current_square.col;
-			int temp_y = kb.current_square.row;
+			int tmp_col = kb.current_square.col;
+			int tmp_row = kb.current_square.row;
 			
 			switch (kb.current_direction) {
 				case north:
-					//y--
-					temp_y--;
+					//row--
+					tmp_row--;
 					break;
 				case east:
-					//x++
-					temp_x++;
+					//col++
+					tmp_col++;
 					break;
 				case south:
-					//y++
-					temp_y++;
+					//row++
+					tmp_row++;
 					break;
 				case west:
-					//x--
-					temp_x--;
+					//col--
+					tmp_col--;
 					break;
 				default:
-					System.out.println("Agent has no direction");
+					//System.out.println("Agent has no direction");
 			}
 			
-			if(MazeBuilder.checkValidForward(temp_x, temp_y)) {
+			// this function is not sensitive to row / col fliping
+			if(MazeBuilder.checkValidForward(tmp_col, tmp_row)) {
 				//Updates the known maze size in KBS
-				if(temp_x+1 > kb.mazeSize) {
-					kb.mazeSize = temp_x;
+				if(tmp_col+1 > kb.mazeSize) {
+					kb.mazeSize = tmp_col;
 				}
-				if(temp_y+1 > kb.mazeSize) {
-					kb.mazeSize = temp_y;
+				if(tmp_row+1 > kb.mazeSize) {
+					kb.mazeSize = tmp_row;
 				}
 				return true;
 			}else {
