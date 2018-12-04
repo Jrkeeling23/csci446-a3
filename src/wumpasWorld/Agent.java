@@ -76,7 +76,8 @@ public class Agent {
 		
 		// finish this update
 		// update number of stinks found
-		if(current.environment_attributes[2] && !kb.getWompusFound()) {
+		if(current.environment_attributes[EnvType.stench.ordinal()] 
+				&& !kb.getWompusFound()) {
 			kb.foundASmell();
 		}
 		return false;			
@@ -299,19 +300,19 @@ public class Agent {
 	 * @param target_col
 	 * @return path List of squares in the optimal path, empty if there is no path to the square
 	 */
-	private ArrayList<Square> get_optimal_path(int target_row, int target_col, boolean use_frontier) {
+	private ArrayList<Square> get_optimal_path(int target_row, int target_col, boolean end_on_frontier) {
 		try {
 			// get current square
 			Square current = kb.getCurrentSquare();
 			Square target;
-			if (use_frontier) {
+			if (end_on_frontier) {
 				target = new Square(target_row, target_col);
 			}
 			else {
 				target = kb.get_Kbs(target_row, target_col);
 			}
 			// find optimal path to target
-			ArrayList<Square> path = search_BFS(current, target, null, 0);
+			ArrayList<Square> path = search_BFS(current, target, null, 0, end_on_frontier);
 			if (path == null) {
 				return new ArrayList<Square>();
 			}
@@ -327,7 +328,7 @@ public class Agent {
 		// get current square
 		Square current = kb.getCurrentSquare();
 		// get the closest Square that has not been visited
-		ArrayList<Square> path = search_BFS(current, null, null, 1);
+		ArrayList<Square> path = search_BFS(current, null, null, 1, false);
 		// path not found
 		if (path == null) {
 			return false;
@@ -342,7 +343,7 @@ public class Agent {
 		// get current square
 		Square current = kb.getCurrentSquare();
 		// find optimal path to closest stench
-		ArrayList<Square> path = search_BFS(current, null, env, 2);
+		ArrayList<Square> path = search_BFS(current, null, env, 2, false);
 		if (path == null) {
 			return new ArrayList<Square>();
 		}
@@ -350,7 +351,9 @@ public class Agent {
 		return path;
 	}
 	
-	private ArrayList<Square> search_BFS(Square start, Square end, EnvType env, int search_end_switch){
+	private ArrayList<Square> search_BFS(Square start, Square end, EnvType env,
+			int search_end_switch, boolean end_on_frontier){
+		
 		Node<Square> root = new Node<Square>(start);
 		// add start to queue
 		LinkedList<Node<Square>> queue = new LinkedList<Node<Square>>();
@@ -403,20 +406,29 @@ public class Agent {
 					// get KBS element at [row + d[0]][col + d[1]]
 					Square tmp = kb.get_Kbs(current.data.row + d[0], current.data.col + d[1]);
 					// don't add an element that is already in the queue, and don't add a dangerous square
-					//TODO: check if temp.tow/col are less than 0
-					if(tmp.row>-1&&tmp.col>-1) {
-						if (!in_queue[tmp.row][tmp.col] && !kb.is_dangerous_square(tmp.row, tmp.col)){
-							// add element to tree
-							Node<Square> tmp_node = current.add_child(tmp);
-							// add element to queue
-							queue.add(tmp_node);
-							// don't add this element again
-							in_queue[tmp.row][tmp.col] = true;
-						}
+					
+					if (!in_queue[tmp.row][tmp.col] && !kb.is_dangerous_square(tmp.row, tmp.col)){
+						// add element to tree
+						Node<Square> tmp_node = current.add_child(tmp);
+						// add element to queue
+						queue.add(tmp_node);
+						// don't add this element again
+						in_queue[tmp.row][tmp.col] = true;
 					}
+					
 				}
 				catch(IndexOutOfBoundsException e) {
-					// skip
+					if (end_on_frontier &&
+							current.data.row + d[0] == end.row &&
+							current.data.col + d[1] == end.col) {
+						// add anyway
+						// add element to tree
+						Node<Square> tmp_node = current.add_child(end);
+						// add element to queue
+						queue.add(tmp_node);
+						// don't add this element again
+						in_queue[end.row][end.col] = true;
+					}
 				}
 			}
 		}
