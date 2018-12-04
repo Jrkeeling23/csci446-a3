@@ -6,9 +6,11 @@ public class World {
 	private static final int env_size = EnvType.values().length;
 	private static Agent agent;
 	public int points = 0;
+	public int cellsEntered;
 	boolean running;
 	
 	public World(int maze_size) {
+		cellsEntered = 0;
 		// build a maze
 		MazeBuilder maze_obj = new MazeBuilder(maze_size);
 		// TODO remove test maze
@@ -27,6 +29,7 @@ public class World {
 			running = agent.agent_cycle(maze[agent.getKB().getCurrentSquare().row][agent.getKB().getCurrentSquare().col]);
 		}
 		points = agent.getKB().points;
+		cellsEntered = agent.cellsEntered;
 	}
 	
 	private void printMaze(Square[][] maze) {

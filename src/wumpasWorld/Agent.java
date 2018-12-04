@@ -8,11 +8,13 @@ public class Agent {
 	// agent needs to have reference to its knowledge base
 	KnowledgeBase kb;
 	ArrayList<Square> follow_path;
+	int cellsEntered;
 	
 	public Agent(Square start) {
 		kb = new KnowledgeBase();
 		kb.current_square = start;
 		follow_path = new ArrayList<>();
+		cellsEntered = 0;
 		// TODO finish initial set up of the agent
 		
 	}
@@ -157,6 +159,8 @@ public class Agent {
 					// update points
 					kb.setPoints(kb.getPoints()-1);
 					System.out.println("Forward move");
+					cellsEntered++;
+					System.out.println("Cell's entered is now: "+cellsEntered);
 				}
 				else {
 					// TODO move not possible

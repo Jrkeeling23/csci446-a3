@@ -115,6 +115,8 @@ public class FirstOrderLogic {
 			//If the agent sees a glitter, & dosen't have gold, pick up gold and return to start
 			if((glitter.Glimmers() && (!kb.player_has_gold))) {
 				kb.player_has_gold = true;
+				System.out.println("You see a glimmer in the dark, upon further inspection it appears to be gold!"+
+				"\nNow you only need make it back without error, less all that has been done til now be for naut.");
 				kb.player_returning_to_start = true;
 			}
 		};

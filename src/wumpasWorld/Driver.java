@@ -15,7 +15,8 @@ public class Driver {
 			int maze_size = scan.nextInt();
 			World world = new World(maze_size);
 			point_total += world.points;
-			System.out.println("The agent finished this game with a score of "+world.points+" points, totaling up to a net of "+point_total+" points");
+			System.out.println("The agent finished this game with a score of "+world.points+" points, totaling up to a net of "+point_total+" points\n"
+					+ "And with "+world.cellsEntered+" cells having been entered (Moves)");
 			System.out.println("\nEnter 'Q' to quit or C to contine: ");
 			String continuePlaying = scan.nextLine();
 			if(continuePlaying.equalsIgnoreCase("Q")) {
