@@ -19,7 +19,11 @@ public class Agent {
 	
 	public boolean agent_cycle(Square agent_square) {
 		// get precepts
-		boolean end_game = this.getPrecepts(agent_square);
+		boolean end_game = false;
+		System.out.println("currently at " + kb.current_square.row + " " + kb.current_square.col);
+		if (!kb.current_square.visited) {
+			end_game = this.getPrecepts(agent_square);
+		}
 		
 		if (end_game) {
 			return false;
@@ -29,13 +33,13 @@ public class Agent {
 		// don't update frontier if we are following a path
 		// paths can only be on visited squares
 		if (follow_path.size() <= 1) {
-			System.out.println("Frontier size 1:" + kb.get_frontier_size());
+			System.out.println("Frontier size:" + kb.get_frontier_size());
 			// update frontier
 			kb.updateFrontier(kb.getCurrentSquare());
-			System.out.println("Frontier size 2:" + kb.get_frontier_size());
+			System.out.println("Frontier size:" + kb.get_frontier_size());
 			// trim frontier
 			kb.trimFrontier();
-			System.out.println("Frontier size 3:" + kb.get_frontier_size());
+			System.out.println("Frontier size:" + kb.get_frontier_size());
 		}
 		
 		// action query
@@ -49,8 +53,6 @@ public class Agent {
 	public boolean getPrecepts(Square currentSquare) {
 		// create new square instance for knowledge base using the attributes from the actual square
 		Square current = new Square(currentSquare.col, currentSquare.row);
-		
-		System.out.println("currently at " + current.row + " " + current.col + " visted was:" + current.visited);
 		
 		current.environment_attributes = currentSquare.environment_attributes;
 		current.visited = true;

@@ -339,18 +339,21 @@ public class KnowledgeBase{
 		// col and row of square 
 		int col_coord = square.col;
 		int row_coord = square.row;
-		System.out.println("Upating square:"+col_coord+", "+row_coord);
+		System.out.println("Upating square:"+row_coord+", "+col_coord);
 		try {
 			if (!get_Kbs(row_coord, col_coord).content_equals(square)){
 				// in KBS but not equal
-				kbs.get(row_coord).set(col_coord, square);
+				kbs.get(row_coord).get(col_coord).environment_attributes = square.environment_attributes;
+				kbs.get(row_coord).get(col_coord).visited = true;
+				kbs.get(row_coord).get(col_coord).fake = false;
 			}
 		}
 		// get_Kbs handles changeArrayListSize, so here we want to just add a square
 		catch(IndexOutOfBoundsException e) {
 			// not in the KBS
-			//TODO: don't run if actually out of bounds (negative)
-			kbs.get(row_coord).set(col_coord, square);
+			kbs.get(row_coord).get(col_coord).environment_attributes = square.environment_attributes;
+			kbs.get(row_coord).get(col_coord).visited = true;
+			kbs.get(row_coord).get(col_coord).fake = false;
 		}
 	}
 	
@@ -362,13 +365,11 @@ public class KnowledgeBase{
 		ArrayList<int[]> adjacent_squares = getSurroundingPos(col_coord, row_coord);
 		
 		// check if adjacent squares are in frontier already or if contained in kbs
-		//TODO: FIX PROBLEM HERE
 		for (int[] pos : adjacent_squares) {
 			int pos_X = pos[0];
 			int pos_Y = pos[1];
 			try {
-				Square tempS = get_Kbs(pos_X, pos_Y);
-				continue;
+				get_Kbs(pos_X, pos_Y);
 			} catch (IndexOutOfBoundsException e) {
 				//This should be reached if it meets the conditions for not being in the kbs
 				
