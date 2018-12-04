@@ -76,6 +76,9 @@ public class KnowledgeBase{
 			i = 1;
 		}
 		int ord = (current_direction.ordinal() + i) % dir.length;
+		if (ord < 0) {
+			ord = dir.length - 1;
+		}
 		current_direction = dir[ord];
 	}
 	

@@ -28,6 +28,9 @@ public class Agent {
 		if (!kb.current_square.visited) {
 			end_game = this.getPrecepts(agent_square);
 		}
+
+		// check if the agent can escape
+		end_game = FirstOrderLogic.climb.climb();
 		
 		if (end_game) {
 			return false;
@@ -63,8 +66,8 @@ public class Agent {
 		kb.setCurrentSquare(current);
 		
 		// stuff to do every time a new square is entered
-		// check if the agent died or if the agent can escape
-		if (FirstOrderLogic.die.die() || FirstOrderLogic.climb.climb()) {
+		// check if the agent died
+		if (FirstOrderLogic.die.die()) {
 			// end the game
 			return true;
 		}
@@ -88,29 +91,44 @@ public class Agent {
 			if (kb.getWompusFound() && kb.getWompusAlive() &&
 					!kb.get_Kbs(kb.wompus_Pos[0], kb.getWompusPos()[1]).has_obj(EnvType.pit) &&
 					kb.current_square.has_obj(EnvType.stench)) {
+				System.out.println("Shooting the wumpus");
 				return Action.Shoot;
 			}
 			else if (follow_path.size() > 0) {
+				System.out.println("Following a path to " + 
+						follow_path.get(follow_path.size() - 1).row + "," +
+						follow_path.get(follow_path.size() - 1).col);
+				
 				return Action.Follow;
 			}
 			else if (kb.has_gold()) {
+				System.out.println("Have Gold, returning to start");
 				this.follow_path = this.get_optimal_path(0, 0);
 				return Action.Follow;
 			}
 			// if there are unvisited empty squares in the KBS, go to the closest one
 			else if (this.closest_unvisited()) {
+				System.out.println("going to a new square at " + 
+						follow_path.get(follow_path.size() - 1).row + "," +
+						follow_path.get(follow_path.size() - 1).col);
 				return Action.Follow;
 			}
 			// Wumpus is still alive and not on a pit -> navigate to adj square
 			else if (kb.getWompusFound() && kb.getWompusAlive() &&
 					!kb.get_Kbs(kb.getWompusPos()[0], kb.getWompusPos()[1]).has_obj(EnvType.pit)) {
 				// Requires moving to the correct square first
+				System.out.println("Navigating to shoot the wumpus");
 				this.follow_path = this.closest_EnvType(EnvType.stench);
 				return Action.Follow;
 			}
 			else {
+				
 				// go to the closest frontier square
 				int[] pos = kb.closest_frontier_square();
+				
+				System.out.println("Suicide at "+ 
+						follow_path.get(follow_path.size() - 1).row + "," +
+						follow_path.get(follow_path.size() - 1).col);
 				
 				// find path to closest frontier square
 				this.follow_path = this.get_optimal_path(pos[0], pos[1]);

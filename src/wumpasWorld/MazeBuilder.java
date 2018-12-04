@@ -158,33 +158,8 @@ public class MazeBuilder {
 	//Checks if the next movement forward the agent is trying to make is valid
 	public static boolean checkValidForward(int x, int y) {
 		
-		//checks if the agent is going out of bounds when moving in a specific direction
-		switch (FirstOrderLogic.kb.current_direction) {
-		case north:
-			//y--
-			if((y-1) >= 0) {
-				return true;
-			}
-		case east:
-			//x++
-			if((x+1) <= maze.length) {
-				return true;
-			}
-		case south:
-			//y++
-			if((y+1) <= maze.length) {
-				return true;
-			}
-		case west:
-			//x--
-			if((x-1) >= 0) {
-				return true;
-			}
-		default:
-			System.out.println("Agent has no direction");
-
-		return false;
-		}
+		//checks if the agent is going out of bounds
+		return !(y < 0 || y >= maze.length) && !(x < 0 || x >= maze.length);
 	}
 	
 	/**
