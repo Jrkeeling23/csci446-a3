@@ -82,6 +82,16 @@ public class MazeBuilder {
 		make_test_maze(w, g, p);
 	}
 	
+	/**
+	 * replaces maze with a test maze for semi-open maze
+	 */
+	public void test_maze_04(){
+		int[] w = {3, 3};
+		int[] g = {1, 2};
+		int[][] p = {{2, 3}, {0, 3}};
+		make_test_maze(w, g, p);
+	}
+	
 	private void make_test_maze(int[] w_pos, int[] gold_pos, int[][] pits_pos) {
 		maze = new Square[4][4];
 		// Initialize all squares

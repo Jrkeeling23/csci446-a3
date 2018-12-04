@@ -128,6 +128,9 @@ public class Agent {
 	 */
 	public void performAction(Action act) {
 		if (act == Action.Follow) {
+			for (Square sq : follow_path) {
+				System.out.println("Follow Path:"+sq.row+", "+sq.col);
+			}
 			Square tmp = follow_path.get(0);
 			//tmp.printEnv();
 			Action movement = move_to(tmp);
@@ -141,18 +144,18 @@ public class Agent {
 					follow_path.remove(0);
 					// update points
 					kb.setPoints(kb.getPoints()-1);
-					for (Square sq : follow_path) {
-						System.out.println("Follow Path:"+sq.col+", "+sq.row);
-					}
+					System.out.println("Forward move");
 				}
 				else {
 					// TODO move not possible
+					System.out.println("Forward move blocked");
 					follow_path.clear();
 					kb.points -= 1;
 				}
 			}
-			else if (movement == Action.RotateCW) {
+			else {
 				// rotate
+				System.out.println("Rotating " + ((movement==Action.RotateCW) ? "CW" : "CCW"));
 				kb.rotate(movement);
 			}
 		}
