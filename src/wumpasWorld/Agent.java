@@ -87,56 +87,51 @@ public class Agent {
 	 * @return Action
 	 */
 	public Action actionQuery() {
-		try {
-			if (kb.getWompusFound() && kb.getWompusAlive() &&
-					!kb.get_Kbs(kb.wompus_Pos[0], kb.getWompusPos()[1]).has_obj(EnvType.pit) &&
-					kb.current_square.has_obj(EnvType.stench)) {
-				System.out.println("Shooting the wumpus");
-				return Action.Shoot;
-			}
-			else if (follow_path.size() > 0) {
-				System.out.println("Following a path to " + 
-						follow_path.get(follow_path.size() - 1).row + "," +
-						follow_path.get(follow_path.size() - 1).col);
-				
-				return Action.Follow;
-			}
-			else if (kb.has_gold()) {
-				System.out.println("Have Gold, returning to start");
-				this.follow_path = this.get_optimal_path(0, 0);
-				return Action.Follow;
-			}
-			// if there are unvisited empty squares in the KBS, go to the closest one
-			else if (this.closest_unvisited()) {
-				System.out.println("going to a new square at " + 
-						follow_path.get(follow_path.size() - 1).row + "," +
-						follow_path.get(follow_path.size() - 1).col);
-				return Action.Follow;
-			}
-			// Wumpus is still alive and not on a pit -> navigate to adj square
-			else if (kb.getWompusFound() && kb.getWompusAlive() &&
-					!kb.get_Kbs(kb.getWompusPos()[0], kb.getWompusPos()[1]).has_obj(EnvType.pit)) {
-				// Requires moving to the correct square first
-				System.out.println("Navigating to shoot the wumpus");
-				this.follow_path = this.closest_EnvType(EnvType.stench);
-				return Action.Follow;
-			}
-			else {
-				
-				// go to the closest frontier square
-				int[] pos = kb.closest_frontier_square();
-				
-				System.out.println("Suicide at "+ 
-						follow_path.get(follow_path.size() - 1).row + "," +
-						follow_path.get(follow_path.size() - 1).col);
-				
-				// find path to closest frontier square
-				this.follow_path = this.get_optimal_path(pos[0], pos[1]);
-				// update follow_path
-				return Action.Follow;
-			}
-		} catch (IndexOutOfBoundsException e) {
-			return null;
+		// TODO add 6) else if Wumpus could be in a set of squares -> shoot at one of them
+		if (kb.getWompusFound() && kb.getWompusAlive() &&
+				!kb.get_Kbs(kb.wompus_Pos[0], kb.getWompusPos()[1]).has_obj(EnvType.pit) &&
+				kb.current_square.has_obj(EnvType.stench)) {
+			System.out.println("Shooting the wumpus");
+			return Action.Shoot;
+		}
+		else if (follow_path.size() > 0) {
+			System.out.println("Following a path to " + 
+					follow_path.get(follow_path.size() - 1).row + "," +
+					follow_path.get(follow_path.size() - 1).col);
+			
+			return Action.Follow;
+		}
+		else if (kb.has_gold()) {
+			System.out.println("Have Gold, returning to start");
+			this.follow_path = this.get_optimal_path(0, 0, false);
+			return Action.Follow;
+		}
+		// if there are unvisited empty squares in the KBS, go to the closest one
+		else if (this.closest_unvisited()) {
+			System.out.println("going to a new square at " + 
+					follow_path.get(follow_path.size() - 1).row + "," +
+					follow_path.get(follow_path.size() - 1).col);
+			return Action.Follow;
+		}
+		// Wumpus is still alive and not on a pit -> navigate to adj square
+		else if (kb.getWompusFound() && kb.getWompusAlive() &&
+				!kb.get_Kbs(kb.getWompusPos()[0], kb.getWompusPos()[1]).has_obj(EnvType.pit)) {
+			// Requires moving to the correct square first
+			System.out.println("Navigating to shoot the wumpus");
+			this.follow_path = this.closest_EnvType(EnvType.stench);
+			return Action.Follow;
+		}
+		else {
+			
+			// go to the closest frontier square
+			int[] pos = kb.closest_frontier_square();
+			
+			// find path to closest frontier square
+			this.follow_path = this.get_optimal_path(pos[0], pos[1], true);
+			
+			System.out.println("Suicide");
+			// update follow_path
+			return Action.Follow;
 		}
 	}
 	
@@ -300,11 +295,17 @@ public class Agent {
 	 * @param target_col
 	 * @return path List of squares in the optimal path, empty if there is no path to the square
 	 */
-	private ArrayList<Square> get_optimal_path(int target_row, int target_col) {
+	private ArrayList<Square> get_optimal_path(int target_row, int target_col, boolean use_frontier) {
 		try {
 			// get current square
 			Square current = kb.getCurrentSquare();
-			Square target = kb.get_Kbs(target_row, target_col);
+			Square target;
+			if (use_frontier) {
+				target = new Square(target_row, target_col);
+			}
+			else {
+				target = kb.get_Kbs(target_row, target_col);
+			}
 			// find optimal path to target
 			ArrayList<Square> path = search_BFS(current, target, null, 0);
 			if (path == null) {

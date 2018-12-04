@@ -358,6 +358,17 @@ public class KnowledgeBase{
 			kbs.get(row_coord).get(col_coord).visited = true;
 			kbs.get(row_coord).get(col_coord).fake = false;
 		}
+		// get ride of this square from the frontier if it is on it
+		int remove = -1;
+		for (int i=0; i<frontier.size(); i++) {
+			if (frontier.get(i).getX() == row_coord && frontier.get(i).getY() == col_coord) {
+				// remove from frontier
+				remove = i;
+			}
+		}
+		if (remove >= 0) {
+			frontier.remove(remove);
+		}
 	}
 	
 	public void updateFrontier(Square square) {
