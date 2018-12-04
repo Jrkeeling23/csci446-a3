@@ -588,7 +588,7 @@ public class KnowledgeBase{
 	private void changeArrayListSize(ArrayList<ArrayList <Square>>  list) {
 		
 		// double the size of the array list
-		int length = list.size()*2;
+		int length = list.size()+1;
 		System.out.println("length " + length);
 		ArrayList<Square> row;
 		
@@ -616,7 +616,7 @@ public class KnowledgeBase{
 	
 	//Once we hit a wall & know maze size, resize kbs and disable the changeArrayListSize method
 	public void resizeMaze() {
-		
+		//TODO: Swap to building the maze and replace it
 		for(int i = 0; i < kbs.size(); i++) {
 			for(int j = 0; j < kbs.get(i).size(); j++) {
 				Square square = kbs.get(i).get(j);
@@ -627,10 +627,13 @@ public class KnowledgeBase{
 			}
 			if(kbs.size()-1 > mazeSize) {
 				kbs.remove(kbs.size()-1);
-				i--;
+				
 				System.out.println("Removing row");
 			}
 		}
+		//for(int i = 0; ikbs.size();i++) {
+		//	if(kbs.get(i))
+		//}
 		System.out.println("X:"+kbs.size()+",Y:"+kbs.get(0).size());
 		//Removes Squares fron the frontier that are now invalid
 		for(int i = 0; i<frontier.size();i++) {
