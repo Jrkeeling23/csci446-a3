@@ -169,6 +169,10 @@ public class Agent {
 					System.out.println("Forward move blocked");
 					follow_path.clear();
 					kb.points -= 1;
+					if(kb.wall_hit) {
+						kb.resizeMaze();
+						System.out.println("Maze Resized.");
+					}
 				}
 			}
 			else {
