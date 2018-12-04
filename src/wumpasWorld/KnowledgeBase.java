@@ -536,12 +536,15 @@ public class KnowledgeBase{
 		//Checks all the modelset's on the frontier for if they have a length of 1, and if so, 
 		//puts them on the KB & removes from frontier
 		for (ModelSet ms : tmp) {
-			if(ms.getModels().size()<=1) {
+			if(ms.getModels().size()==1) {
 				//put in KB
 				kbs.get(ms.getX()).set(ms.getY(), ms.getModels().get(0));
 				
 				//remove from frontier
 				frontier.remove(ms);
+			}
+			else if (ms.getModels().size()==0) {
+				System.out.println("!!!!!!!!!!!! Model obj with no models !!!!!!!!!!!!");
 			}
 		}
 	}

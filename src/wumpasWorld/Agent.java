@@ -23,7 +23,7 @@ public class Agent {
 		
 		kb.printMaze();
 		System.out.println("currently at " + kb.current_square.row + " " + kb.current_square.col);
-		
+		System.out.println("faceing " + kb.current_direction);
 		// check if the agent can escape
 		boolean escape = FirstOrderLogic.climb.climb();
 		
@@ -37,7 +37,7 @@ public class Agent {
 		
 		// don't update frontier if we are following a path
 		// paths can only be on visited squares
-		if (follow_path.size() <= 1) {
+		if (follow_path.size() < 1) {
 			System.out.println("Frontier size:" + kb.get_frontier_size());
 			// update frontier
 			kb.updateFrontier(kb.getCurrentSquare());
