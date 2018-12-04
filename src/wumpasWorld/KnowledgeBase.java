@@ -660,7 +660,7 @@ public class KnowledgeBase{
 	private void changeArrayListSize(ArrayList<ArrayList <Square>>  list) {
 		
 		// double the size of the array list
-		int length = list.size()*2;
+		int length = list.size()*1;
 		System.out.println("length " + length);
 		ArrayList<Square> row;
 		
