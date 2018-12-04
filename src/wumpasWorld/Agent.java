@@ -145,6 +145,7 @@ public class Agent {
 			for (Square sq : follow_path) {
 				System.out.println("Follow Path:"+sq.row+", "+sq.col);
 			}
+			//TODO: handle IndexOutOfBounds Error here
 			Square tmp = follow_path.get(0);
 			//tmp.printEnv();
 			Action movement = move_to(tmp);

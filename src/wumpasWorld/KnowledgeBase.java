@@ -171,6 +171,8 @@ public class KnowledgeBase{
 			}
 			
 			//checks if they are in corners: (plus one in each axis) from the smallest
+			//X
+			// X
 			if(smellySpaces.get(0)[0]<smellySpaces.get(1)[0]) {//checks if the first on in the arraylist is the smallest
 				//check left & down from the last in list if one or the other has been visited/is surrounded by any other visited square
 				try {
@@ -197,6 +199,7 @@ public class KnowledgeBase{
 				}
 				
 			}else {
+				
 				try {
 					if(get_Kbs(smellySpaces.get(0)[0]-1, smellySpaces.get(0)[1]).visited) {
 						if(!get_Kbs(smellySpaces.get(0)[0], smellySpaces.get(0)[1]-1).visited) {
@@ -221,6 +224,60 @@ public class KnowledgeBase{
 					// TODO: handle exception
 				}
 				// TODO needs to handle a IndexOutOfBoundsException
+			}
+			
+			//Checks if they are in corners (flipped)
+			// X
+			//X
+			//checks if they are in corners: (plus one in each axis) from the smallest
+			if(smellySpaces.get(0)[0]<smellySpaces.get(1)[0]) {//checks if the first on in the arraylist is the smallest
+				//check left & down from the last in list if one or the other has been visited/is surrounded by any other visited square
+				try {
+					if(get_Kbs(smellySpaces.get(0)[0]+1, smellySpaces.get(0)[1]).visited) {
+						if(!get_Kbs(smellySpaces.get(0)[0], smellySpaces.get(0)[1]+1).visited) {
+							wompus_found = true;
+							System.out.println("You think there is a wumpus near by.");
+							wompus_Pos[0] = smellySpaces.get(0)[0];
+							wompus_Pos[1] = smellySpaces.get(0)[1]+1;
+						}
+							
+					}else if(get_Kbs(smellySpaces.get(0)[0], smellySpaces.get(0)[1]+1).visited){
+						if(!get_Kbs(smellySpaces.get(0)[0]+1, smellySpaces.get(0)[1]).visited){
+							wompus_found = true;
+							System.out.println("You think there is a wumpus near by.");
+							wompus_Pos[0] = smellySpaces.get(0)[0]+1;
+							wompus_Pos[1] = smellySpaces.get(0)[1];
+						}
+					}else {
+						//We don't know which one the wompus is in yet, but could do more checks.
+					}
+				} catch (Exception e) {
+				}
+				
+			}else {
+				
+				try {
+					if(get_Kbs(smellySpaces.get(1)[0]+1, smellySpaces.get(1)[1]).visited) {
+						if(!get_Kbs(smellySpaces.get(1)[0], smellySpaces.get(1)[1]+1).visited) {
+							wompus_found = true;
+							System.out.println("You think there is a wumpus near by.");
+							wompus_Pos[0] = smellySpaces.get(1)[0];
+							wompus_Pos[1] = smellySpaces.get(1)[1]+1;
+						}
+							
+					}else if(get_Kbs(smellySpaces.get(1)[0], smellySpaces.get(1)[1]+1).visited){
+						if(!get_Kbs(smellySpaces.get(1)[0]+1, smellySpaces.get(1)[1]).visited){
+							wompus_found = true;
+							System.out.println("You think there is a wumpus near by.");
+							wompus_Pos[0] = smellySpaces.get(1)[0]+1;
+							wompus_Pos[1] = smellySpaces.get(1)[1];
+						}
+					}else {
+						//We don't know which one the wompus is in yet, but could do more checks.
+						System.out.println("You think there is a wumpus near by, but you are unsure...");
+					}
+				} catch (Exception e) {
+				}
 			}
 			
 		}
@@ -483,6 +540,7 @@ public class KnowledgeBase{
 						//can't make inference
 					}else if(unknown == 1){
 						//make inference on unknown square (remove the safe square)
+						//TODO: Handle out of bounds exception
 						ms.removeSafe();
 						
 					}else {

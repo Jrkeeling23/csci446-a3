@@ -125,7 +125,13 @@ public class ModelSet {
 	}
 	
 	public void removeSafe() {
-		models.remove(0);
+		Square s = new Square(models.get(0).row, models.get(0).col);
+		//checks if the first object in models is infact Safe, other wise ignore, as it has already been removed
+		if(models.get(0).content_equals(s)){
+			models.remove(0);
+		}else {
+			System.out.println("Attempted to remove safe space that was already removed");
+		}
 	}
 	
 	//Remove elements of a certain type
