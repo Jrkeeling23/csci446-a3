@@ -16,6 +16,7 @@ public class KnowledgeBase{
 	Direction current_direction;
 	int points;
 	
+	// tracks the size of the maze when we know how big it is = the max allowed index
 	int mazeSize;
 	
 	// adjacent squares of kbs are added to frontier
@@ -127,8 +128,8 @@ public class KnowledgeBase{
 	// TODO debug this method
 	public void foundASmell() {
 		//get current square pos x and y 
-		int x = current_square.col;
-		int y = current_square.row;
+		int x = current_square.row;
+		int y = current_square.col;
 		int[] position = {x,y};
 		
 		smellySpaces.add(position);
@@ -137,7 +138,7 @@ public class KnowledgeBase{
 			
 			//checks if they are on opposite ends: (equal on one axis or another)
 			if(smellySpaces.get(0)[0] == smellySpaces.get(1)[0]) {
-				//horizontal match, the wompus is inbetween
+				//horizontal match, the wompus is in between
 				wompus_found = true;
 				//for finding mid point
 				int y1 = smellySpaces.get(0)[1];
@@ -152,7 +153,7 @@ public class KnowledgeBase{
 				wompus_Pos[0] = smellySpaces.get(0)[0];
 				wompus_Pos[1] = y_val;
 			}else if(smellySpaces.get(0)[1] == smellySpaces.get(1)[1]) {
-				//vertical match, the wompus is inbetween
+				//vertical match, the wompus is in between
 				wompus_found = true;
 				
 				//for finding mid point
@@ -557,7 +558,7 @@ public class KnowledgeBase{
 		}
 		if (wall_hit) {
 			// we do know how big the maze is
-			return distance < mazeSize;
+			return distance > mazeSize;
 		}
 		else {
 			// we don't know how big the maze is
