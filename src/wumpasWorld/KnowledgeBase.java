@@ -124,6 +124,7 @@ public class KnowledgeBase{
 	}
 	
 	//Tried to deduce where the wompus is early via 2nd order logic
+	// TODO debug this method
 	public void foundASmell() {
 		//get current square pos x and y 
 		int x = current_square.col;
@@ -319,7 +320,7 @@ public class KnowledgeBase{
 				}
 				//If this position is on the frontier, temp = K
 				for (ModelSet modelSet : frontier) {
-					if(modelSet.getX() == col && modelSet.getY() == row) {
+					if(modelSet.getX() == row && modelSet.getY() == col) {
 						tmp = "NM";
 						if(kbs.get(row).get(col).visited) {
 							tmp = "VM";
@@ -459,7 +460,7 @@ public class KnowledgeBase{
 				//attempts 2nd order logic to deduce the wompus's location if it hasn't been found already
 				if(!wompus_found && FirstOrderLogic.smells.Smells(square)) {
 					//Needs to check now to see if we know about all the surrounding squares (in maze bounds)
-					ArrayList<int[]> checkIfKnownPos = getSurroundingPos(square.col, square.row);
+					ArrayList<int[]> checkIfKnownPos = getSurroundingPos(square.row, square.col);
 					ArrayList<Square> checkIfKnown =  new ArrayList<>();
 					int unknown = 0;
 					
@@ -493,7 +494,7 @@ public class KnowledgeBase{
 				//Attempt second order logic for finding pits
 				if(FirstOrderLogic.breezy.Breezy(square)) {
 					//Needs to check now to see if we know about all the surrounding squares (in maze bounds)
-					ArrayList<int[]> checkIfKnownPos = getSurroundingPos(square.col, square.row);
+					ArrayList<int[]> checkIfKnownPos = getSurroundingPos(square.row, square.col);
 					ArrayList<Square> checkIfKnown =  new ArrayList<>();
 					int unknown = 0;
 					
@@ -607,7 +608,7 @@ public class KnowledgeBase{
 		list.add(row);
 		
 		for (ArrayList<Square> al : list) {
-			Square fakeSquare = new Square(al.get(al.size()-1).col, al.get(al.size()-1).row+1);
+			Square fakeSquare = new Square(al.get(al.size()-1).row, al.get(al.size()-1).col+1);
 			fakeSquare.fake = true;
 			al.add(fakeSquare);
 		}

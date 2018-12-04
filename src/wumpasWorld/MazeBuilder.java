@@ -121,8 +121,8 @@ public class MazeBuilder {
 	//Uses the agent's position & direction to verify if the shot being taken hits or not without knowledge of
 	//the wumpus's actual position being reveiled to the agent.
 	public static boolean verifyWumpusHit() {
-			int x = FirstOrderLogic.kb.getCurrentSquare().col;
-			int y = FirstOrderLogic.kb.getCurrentSquare().row;
+			int x = FirstOrderLogic.kb.getCurrentSquare().row;
+			int y = FirstOrderLogic.kb.getCurrentSquare().col;
 			
 			//Evaluates the direction
 			switch (FirstOrderLogic.kb.current_direction) {

@@ -57,7 +57,7 @@ public class Agent {
 	
 	public boolean getPrecepts(Square currentSquare) {
 		// create new square instance for knowledge base using the attributes from the actual square
-		Square current = new Square(currentSquare.col, currentSquare.row);
+		Square current = new Square(currentSquare.row, currentSquare.col);
 		
 		current.environment_attributes = currentSquare.environment_attributes;
 		current.visited = true;
