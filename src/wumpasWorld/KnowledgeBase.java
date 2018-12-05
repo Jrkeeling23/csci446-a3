@@ -365,38 +365,29 @@ public class KnowledgeBase{
 	public void printMaze() {
 		for (int row=0; row<kbs.size(); row++) {
 			for (int col=0; col<kbs.size(); col++) {
-				boolean fs = false;
-				String tmp = "N";
+				String tmp = "NK";
 				if(kbs.get(row).get(col).visited) {
-					tmp = "V";
+					tmp = "VK";
 				}
 				//If the square is fake, mark it with F
 				if(kbs.get(row).get(col).fake) {
-					tmp = "N";
+					tmp = "NF";
 					if(kbs.get(row).get(col).visited) {
-						tmp = "V";
+						tmp = "VF";
 					}
 				}
 				//If this position is on the frontier, temp = K
 				for (ModelSet modelSet : frontier) {
 					if(modelSet.getX() == row && modelSet.getY() == col) {
-						fs = true;
-						tmp = "N";
+						tmp = "NM";
 						if(kbs.get(row).get(col).visited) {
-							tmp = "V";
+							tmp = "VM";
 						}
-						tmp += modelSet.getModels().size();
 					}
 				}
 				for (int i=0; i<EnvType.values().length; i++) {
 					if(kbs.get(row).get(col).fake) {
-						if (fs) {
-							if (i>0)
-								tmp += "#";
-						}
-						else {
-							tmp += "_";
-						}
+						tmp += "_";
 					}
 					else {
 						tmp += kbs.get(row).get(col).environment_attributes[i] ? "1" : "0";
@@ -578,6 +569,7 @@ public class KnowledgeBase{
 									if(temp_square.has_obj(EnvType.pit)){
 										unknown++;
 									}
+									//Subtract one from unknown if checkIfKnown 
 							}
 						} catch (IndexOutOfBoundsException e) {
 							//We don't know enough about this square, iterate unknown by 1
