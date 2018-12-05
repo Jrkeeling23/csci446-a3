@@ -185,6 +185,30 @@ public class MazeBuilder {
 		return !(y < 0 || y >= maze.length) && !(x < 0 || x >= maze.length);
 	}
 	
+	//returns true if the position is passed in as a corner
+	public static boolean cornerCheck(int row, int col) {
+		int adjN = col-1;
+		int adjE = row+1;
+		int adjS = col+1;
+		int adjW = row-1;
+		
+		int adjInBounds = 0;
+	
+		if(!(adjN < 0 || adjN >= maze.length))
+			adjInBounds++;
+		if(!(adjE < 0 || adjE >= maze.length))
+			adjInBounds++;
+		if(!(adjS < 0 || adjS >= maze.length))
+			adjInBounds++;
+		if(!(adjW < 0 || adjW >= maze.length))
+			adjInBounds++;
+		if(adjInBounds == 2) {
+			return true;
+		}
+		System.out.println("ADJINBOUNDS: "+adjInBounds+", @ pos: "+row+","+col);
+		return false;
+	}
+	
 	/**
 	 * adds the given environment object to all square adjacent to the given coordinates
 	 * will ignore out of bounds squares
