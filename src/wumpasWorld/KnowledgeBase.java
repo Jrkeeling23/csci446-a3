@@ -601,7 +601,9 @@ public class KnowledgeBase{
 			if(ms.getModels().size()==1) {
 				//put in KB
 				kbs.get(ms.getX()).set(ms.getY(), ms.getModels().get(0));
-				
+				if (ms.getModels().get(0).has_obj(EnvType.wumpus)) {
+					this.wompus_found = true;
+				}
 				//remove from frontier
 				frontier.remove(ms);
 			}
