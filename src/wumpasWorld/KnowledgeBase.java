@@ -565,6 +565,10 @@ public class KnowledgeBase{
 							if(!(is_out_of_bounds(pos[0]) || is_out_of_bounds(pos[1]))) {
 								Square temp_square = get_Kbs(pos[0],pos[1]);
 									checkIfKnown.add(temp_square);
+									
+									if(temp_square.has_obj(EnvType.pit)){
+										unknown++;
+									}
 							}
 						} catch (IndexOutOfBoundsException e) {
 							//We don't know enough about this square, iterate unknown by 1
