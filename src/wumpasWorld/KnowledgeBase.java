@@ -606,7 +606,9 @@ public class KnowledgeBase{
 			if(ms.getModels().size()==1) {
 				//put in KB
 				kbs.get(ms.getX()).set(ms.getY(), ms.getModels().get(0));
-				
+				if (ms.getModels().get(0).has_obj(EnvType.wumpus)) {
+					this.wompus_found = true;
+				}
 				//remove from frontier
 				frontier.remove(ms);
 			}
@@ -660,7 +662,7 @@ public class KnowledgeBase{
 	private void changeArrayListSize(ArrayList<ArrayList <Square>>  list) {
 		
 		// double the size of the array list
-		int length = list.size()*1;
+		int length = list.size() + 1;
 		System.out.println("length " + length);
 		ArrayList<Square> row;
 		
